@@ -16,19 +16,19 @@ import Home from "@/components/Home"
 import About from "@/components/About"
 
 export default function App() {
-  const [isSelected, setIsSelected] = useState(false)
+  const [isDarkmode, setIsDarkmode] = useState(false)
   const [currRouter, setCurrRouter] = useState("home")
 
   const currComp = useMemo(() => {
     if (currRouter == "home") {
-      return <Home />
+      return <Home isDarkmode={isDarkmode}/>
     } else {
       return <About />
     }
-  }, [currRouter])
+  }, [currRouter, isDarkmode])
 
   return (
-    <main className={`${isSelected ? "dark" : "light" }`}>
+    <main className={`${isDarkmode ? "dark" : "light" }`}>
       <Navbar className="dark:bg-black">
         <NavbarBrand className="gap-2">
           <Avatar src="/logo.png" size="sm" radius="full"/>
@@ -49,11 +49,11 @@ export default function App() {
         <NavbarContent justify="end">
           <NavbarItem>
             <Switch
-              isSelected={isSelected}
-              onValueChange={setIsSelected}
+              isSelected={isDarkmode}
+              onValueChange={setIsDarkmode}
               size="lg"
               color="success"
-              thumbIcon={() => (isSelected ? <MoonIcon /> : <SunIcon />)}
+              thumbIcon={() => (isDarkmode ? <MoonIcon /> : <SunIcon />)}
             ></Switch>
           </NavbarItem>
         </NavbarContent>
