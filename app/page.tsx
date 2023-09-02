@@ -28,7 +28,7 @@ export default function App() {
   }, [currRouter])
 
   return (
-    <main className={`h-screen ${isSelected ? "dark" : "light" }`}>
+    <main className={`${isSelected ? "dark" : "light" }`}>
       <Navbar className="dark:bg-black">
         <NavbarBrand className="gap-2">
           <Avatar src="/logo.png" size="sm" radius="full"/>
