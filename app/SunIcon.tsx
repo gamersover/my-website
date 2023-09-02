@@ -1,5 +1,5 @@
 import React from "react";
-export const SunIcon = (props : any) => (
+export const SunIcon = (props: any) => (
   <svg
     aria-hidden="true"
     focusable="false"

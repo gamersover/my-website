@@ -1,5 +1,4 @@
-import { Card, CardHeader, CardBody } from "@nextui-org/card";
-import { Image } from "@nextui-org/image";
+import { Card, CardHeader, Image } from "@nextui-org/react";
 
 export default function Home() {
   return (
@@ -14,7 +13,9 @@ export default function Home() {
           className="bg-amber-100/50 dark:bg-amber-800/50 w-[500px] h-[400px] hover:-translate-y-3 transition-transform"
         >
           <CardHeader className="flex-col !items-center">
-            <p className="font-bold text-amber-800 dark:text-amber-100">我的博客</p>
+            <p className="font-bold text-amber-800 dark:text-amber-100">
+              我的博客
+            </p>
           </CardHeader>
           <Image src="/blog.jpg" alt="blog" className="w-full h-full" />
         </Card>
