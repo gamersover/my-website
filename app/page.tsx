@@ -1,13 +1,14 @@
-"use client";
+"use client"
+
 import {
   Navbar,
   NavbarBrand,
   NavbarContent,
-  NavbarItem,
-  Link,
-  Avatar,
-  Switch
-} from "@nextui-org/react"
+  NavbarItem
+} from "@nextui-org/navbar"
+import {Link} from "@nextui-org/link"
+import { Avatar } from "@nextui-org/avatar"
+import { Switch } from "@nextui-org/switch"
 import { MoonIcon } from "./MoonIcon"
 import { SunIcon } from "./SunIcon"
 import { useMemo, useState } from "react"
