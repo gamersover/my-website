@@ -3,8 +3,8 @@ import { Image } from "@nextui-org/image";
 
 export default function Home({isDarkmode}: {isDarkmode: boolean}) {
   return (
-    <div className="h-full min-h-screen flex flex-col justify-center items-center dark:bg-black">
-      <p className="text-5xl mb-10 dark:text-white">
+    <div className="h-full min-h-screen flex flex-col justify-evenly items-center dark:bg-black">
+      <p className="flex items-center h-20 text-3xl md:text-5xl dark:text-white">
         欢迎来到
         <span className="text-cyan-600 dark:text-cyan-100 font-bold">尘雨尘风</span>
         的网站
