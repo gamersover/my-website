@@ -34,7 +34,6 @@ export default function App() {
       <Navbar
         isMenuOpen={isMenuOpen}
         onMenuOpenChange={setIsMenuOpen}
-        className="dark:bg-black"
       >
         <NavbarContent className="sm:hidden" justify="start">
           <NavbarMenuToggle

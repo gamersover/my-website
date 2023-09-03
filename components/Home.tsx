@@ -16,7 +16,7 @@ export default function Home() {
         <Card
           isPressable
           onPress={() => {
-            window.location.replace("https://blog.caoqinping.com");
+            window.location.href = "https://blog.caoqinping.com"
           }}
           className="bg-slate-100/50 dark:bg-slate-800/50 hover:-translate-y-3 transition-transform"
         >
@@ -25,12 +25,12 @@ export default function Home() {
               我的博客
             </p>
           </CardHeader>
-          <Image src={`${theme == "light" ? "/blog-light.jpg" : "/blog-dark.jpg"}`} alt="blog" className="w-full h-full" />
+          <Image src={`${theme == "dark" ? "/blog-dark.jpg" : "/blog-light.jpg"}`} alt="blog" className="w-full h-full" />
         </Card>
         <Card
           isPressable
           onPress={() => {
-            window.location.replace("https://game.caoqinping.com");
+            window.location.href = "https://game.caoqinping.com"
           }}
           className="bg-sky-100/50 dark:bg-sky-800/50 hover:-translate-y-3 transition-transform"
         >
