@@ -11,38 +11,42 @@ import {
 } from "@nextui-org/navbar";
 import { Link } from "@nextui-org/link";
 import { Avatar } from "@nextui-org/avatar";
-import { Switch } from "@nextui-org/switch";
-import { MoonIcon } from "./MoonIcon";
-import { SunIcon } from "./SunIcon";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+
 import { useMemo, useState } from "react";
 import Home from "@/components/Home";
 import About from "@/components/About";
 
 export default function App() {
-  const [isDarkmode, setIsDarkmode] = useState(false);
   const [currRouter, setCurrRouter] = useState("home");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const currComp = useMemo(() => {
     if (currRouter == "home") {
-      return <Home isDarkmode={isDarkmode} />;
+      return <Home />;
     } else {
       return <About />;
     }
-  }, [currRouter, isDarkmode]);
+  }, [currRouter]);
 
   return (
-    <main className={`${isDarkmode ? "dark" : "light"}`}>
-      <Navbar isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen} className="dark:bg-black">
+    <main>
+      <Navbar
+        isMenuOpen={isMenuOpen}
+        onMenuOpenChange={setIsMenuOpen}
+        className="dark:bg-black"
+      >
         <NavbarContent className="sm:hidden" justify="start">
           <NavbarMenuToggle
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           />
         </NavbarContent>
-        <NavbarBrand className="gap-2">
-          <Avatar src="/logo.png" size="sm" radius="full" />
-          <p className="font-bold text-xl dark:text-white">尘雨尘风</p>
-        </NavbarBrand>
+        <NavbarContent>
+          <NavbarBrand className="gap-2">
+            <Avatar src="/logo.png" size="sm" radius="full" />
+            <p className="font-bold text-xl dark:text-white">尘雨尘风</p>
+          </NavbarBrand>
+        </NavbarContent>
         <NavbarContent className="hidden sm:flex gap-8" justify="center">
           <NavbarItem isActive={currRouter == "home"}>
             <Link
@@ -64,21 +68,16 @@ export default function App() {
           </NavbarItem>
         </NavbarContent>
         <NavbarContent justify="end">
-          <NavbarItem>
-            <Switch
-              isSelected={isDarkmode}
-              onValueChange={setIsDarkmode}
-              size="lg"
-              color="success"
-              thumbIcon={() => (isDarkmode ? <MoonIcon /> : <SunIcon />)}
-            ></Switch>
-          </NavbarItem>
+          <ThemeSwitcher />
         </NavbarContent>
         <NavbarMenu>
           <NavbarMenuItem>
             <Link
               color={`${currRouter == "home" ? "primary" : "foreground"}`}
-              onPress={() => {setCurrRouter("home"); setIsMenuOpen(false)}}
+              onPress={() => {
+                setCurrRouter("home");
+                setIsMenuOpen(false);
+              }}
               className="hover:cursor-pointer w-full"
               size="lg"
             >
@@ -86,9 +85,12 @@ export default function App() {
             </Link>
           </NavbarMenuItem>
           <NavbarMenuItem>
-          <Link
+            <Link
               color={`${currRouter == "about" ? "primary" : "foreground"}`}
-              onPress={() => {setCurrRouter("about"); setIsMenuOpen(false)}}
+              onPress={() => {
+                setCurrRouter("about");
+                setIsMenuOpen(false);
+              }}
               className="hover:cursor-pointer w-full"
               size="lg"
             >

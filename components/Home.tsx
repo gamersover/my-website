@@ -1,7 +1,10 @@
 import { Card, CardHeader } from "@nextui-org/card";
 import { Image } from "@nextui-org/image";
+import { useTheme } from "next-themes";
 
-export default function Home({isDarkmode}: {isDarkmode: boolean}) {
+export default function Home() {
+  const { theme, setTheme } = useTheme()
+
   return (
     <div className="h-full min-h-screen flex flex-col justify-evenly items-center dark:bg-black">
       <p className="flex items-center h-20 text-3xl md:text-5xl dark:text-white">
@@ -22,7 +25,7 @@ export default function Home({isDarkmode}: {isDarkmode: boolean}) {
               我的博客
             </p>
           </CardHeader>
-          <Image src={`${isDarkmode ? "/blog-dark.jpg" : "/blog-light.jpg"}`} alt="blog" className="w-full h-full" />
+          <Image src={`${theme == "light" ? "/blog-light.jpg" : "/blog-dark.jpg"}`} alt="blog" className="w-full h-full" />
         </Card>
         <Card
           isPressable
