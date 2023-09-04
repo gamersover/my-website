@@ -12,13 +12,13 @@ export default function Home() {
         <span className="text-cyan-600 dark:text-cyan-100 font-bold">尘雨尘风</span>
         的网站
       </p>
-      <div className="container mx-auto p-8 gap-8 grid grid-cols-1 md:grid-cols-2">
+      <div className="container px-8 py-8 lg:px-48 gap-10 lg:gap-24 grid grid-cols-1 md:grid-cols-2">
         <Card
           isPressable
           onPress={() => {
             window.location.href = "https://blog.caoqinping.com"
           }}
-          className="bg-slate-100/50 dark:bg-slate-800/50 hover:-translate-y-3 transition-transform"
+          className="bg-slate-100/50 dark:bg-slate-800/50 hover:scale-105 transition-transform"
         >
           <CardHeader className="flex-col !items-center">
             <p className="font-bold text-slate-800 dark:text-slate-100">
@@ -32,7 +32,7 @@ export default function Home() {
           onPress={() => {
             window.location.href = "https://game.caoqinping.com"
           }}
-          className="bg-sky-100/50 dark:bg-sky-800/50 hover:-translate-y-3 transition-transform"
+          className="bg-sky-100/50 dark:bg-sky-800/50 hover:scale-105 transition-transform"
         >
           <CardHeader className="flex-col !items-center">
             <p className="font-bold text-sky-800 dark:text-sky-100">扑克游戏</p>

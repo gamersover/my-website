@@ -30,7 +30,7 @@ export default function App() {
   }, [currRouter]);
 
   return (
-    <main>
+    <>
       <Navbar
         isMenuOpen={isMenuOpen}
         onMenuOpenChange={setIsMenuOpen}
@@ -51,7 +51,7 @@ export default function App() {
             <Link
               color={`${currRouter == "home" ? "primary" : "foreground"}`}
               onPress={() => setCurrRouter("home")}
-              className="hover:cursor-pointer"
+              className="hover:cursor-pointer text-xl"
             >
               首页
             </Link>
@@ -60,7 +60,7 @@ export default function App() {
             <Link
               color={`${currRouter == "about" ? "primary" : "foreground"}`}
               onPress={() => setCurrRouter("about")}
-              className="hover:cursor-pointer"
+              className="hover:cursor-pointer text-xl"
             >
               关于
             </Link>
@@ -77,7 +77,7 @@ export default function App() {
                 setCurrRouter("home");
                 setIsMenuOpen(false);
               }}
-              className="hover:cursor-pointer w-full"
+              className="hover:cursor-pointer w-full text-xl"
               size="lg"
             >
               首页
@@ -90,7 +90,7 @@ export default function App() {
                 setCurrRouter("about");
                 setIsMenuOpen(false);
               }}
-              className="hover:cursor-pointer w-full"
+              className="hover:cursor-pointer w-full text-xl"
               size="lg"
             >
               关于
@@ -99,6 +99,6 @@ export default function App() {
         </NavbarMenu>
       </Navbar>
       <>{currComp}</>
-    </main>
+    </>
   );
 }
