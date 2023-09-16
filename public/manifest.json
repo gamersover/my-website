@@ -1,0 +1,18 @@
+{
+    "name": "尘雨尘风",
+    "short_name": "尘雨尘风",
+    "description": "个人网站",
+    "start_url": "/",
+    "display": "fullscreen",
+    "orientation": "landscape",
+    "background_color": "white",
+    "theme_color": "white",
+    "icons": [
+        {
+            "src": "/logo.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
+

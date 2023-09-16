@@ -1,38 +1,33 @@
 "use client";
 
-import { useTheme } from "next-themes";
-import { useEffect, useMemo, useState } from "react";
 import { NavbarItem } from "@nextui-org/navbar";
 import { Switch } from "@nextui-org/switch";
 import { MoonIcon, SunIcon } from "@/components/Icons";
 
-export function ThemeSwitcher() {
-  const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+export function ThemeSwitcher({
+  theme,
+  setTheme,
+}: {
+  theme: string;
+  setTheme: (theme: string) => void;
+}) {
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const { isDarkmode, setIsDarkmode } = useMemo(() => {
-    return {
-      isDarkmode: theme == "dark",
-      setIsDarkmode: () => {
-        theme == "dark" ? setTheme("light") : setTheme("dark");
-      },
-    };
-  }, [theme, setTheme]);
-
-  if (!mounted) return null;
+  function handleThemeChange() {
+    if (theme === "dark") {
+      setTheme("light");
+    } else {
+      setTheme("dark");
+    }
+  }
 
   return (
     <NavbarItem>
       <Switch
-        isSelected={isDarkmode}
-        onValueChange={setIsDarkmode}
+        isSelected={theme === "dark"}
+        onValueChange={handleThemeChange}
         size="lg"
         color="success"
-        thumbIcon={() => (isDarkmode ? <MoonIcon /> : <SunIcon />)}
+        thumbIcon={() => (theme === "dark" ? <MoonIcon /> : <SunIcon />)}
       />
     </NavbarItem>
   );
