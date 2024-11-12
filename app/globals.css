@@ -1,32 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-
-:root {
-    --theme-color: #fff
-}
-
-@media (prefers-color-schema : dark) {
-    :root {
-        --theme-color: #000
-    }
-}
-
-@keyframes moveBackground {
-    0% {
-        background-position: 100% 0;
-    }
-    100% {
-        background-position: -100% 0;
-    }
-}
-
-.text-marquee {
-    background: linear-gradient(90deg, red, blue, green, orange, red); /* 背景颜色渐变 */
-    background-size: 200% 100%; /* 双倍宽度以容纳动画 */
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent; /* 字体颜色透明 */
-    animation: moveBackground 5s linear infinite; /* 无限左右移动的动画 */
-}

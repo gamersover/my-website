@@ -1,109 +1,40 @@
 "use client";
 
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  NavbarMenu,
-  NavbarMenuItem,
-  NavbarMenuToggle,
-} from "@nextui-org/navbar";
-import { Link } from "@nextui-org/link";
-import { Avatar } from "@nextui-org/avatar";
-import { ThemeSwitcher } from "@/components/ThemeSwitcher";
-import { Providers } from "./providers";
-
-import { useEffect, useMemo, useState } from "react";
-import Home from "@/components/Home";
-import About from "@/components/About";
 import useLocalStorage from "@/hooks/useLocalStorage";
-
+import Navbar from "@/components/Navbar";
+import Home from "@/components/Home";
+import Tech from "@/components/Tech";
+import Projects from "@/components/Projects";
+import Contact from "@/components/Contact";
+import { useEffect, useState } from "react";
 
 export default function App() {
-  const [currRouter, setCurrRouter] = useState("home");
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [theme, setTheme] = useLocalStorage('theme', 'light')
+  const [colorMode, setColorMode] = useLocalStorage("colorMode", "light");
+  const [theme, setTheme] = useState("light");
 
-  const currComp = useMemo(() => {
-    if (currRouter == "home") {
-      return <Home theme={theme}/>;
+  useEffect(() => {
+    if (colorMode === "system") {
+      // 如果是 system 模式，立即根据系统主题切换
+      const isDarkMode = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      setTheme(isDarkMode ? "dark" : "light");
     } else {
-      return <About />;
+      setTheme(colorMode); // 如果是 light 或 dark，直接应用
     }
-  }, [currRouter, theme]);
+  }, [colorMode]);
 
   return (
     <body className={theme}>
-      <Providers>
-        <div className="flex flex-col h-screen">
-          <Navbar className="dark:bg-black" isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
-            <NavbarContent className="sm:hidden dark:text-white" justify="start">
-              <NavbarMenuToggle
-                aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-              />
-            </NavbarContent>
-            <NavbarContent>
-              <NavbarBrand className="gap-2">
-                <Avatar src="/logo.png" size="sm" radius="full" />
-                <p className="font-bold text-xl dark:text-white">尘雨尘风</p>
-              </NavbarBrand>
-            </NavbarContent>
-            <NavbarContent className="hidden sm:flex gap-8" justify="center">
-              <NavbarItem isActive={currRouter == "home"}>
-                <Link
-                  color={`${currRouter == "home" ? "primary" : "foreground"}`}
-                  onPress={() => setCurrRouter("home")}
-                  className="hover:cursor-pointer text-xl"
-                >
-                  首页
-                </Link>
-              </NavbarItem>
-              <NavbarItem isActive={currRouter == "about"}>
-                <Link
-                  color={`${currRouter == "about" ? "primary" : "foreground"}`}
-                  onPress={() => setCurrRouter("about")}
-                  className="hover:cursor-pointer text-xl"
-                >
-                  关于
-                </Link>
-              </NavbarItem>
-            </NavbarContent>
-            <NavbarContent justify="end">
-              <ThemeSwitcher theme={theme} setTheme={setTheme}/>
-            </NavbarContent>
-            <NavbarMenu>
-              <NavbarMenuItem>
-                <Link
-                  color={`${currRouter == "home" ? "primary" : "foreground"}`}
-                  onPress={() => {
-                    setCurrRouter("home");
-                    setIsMenuOpen(false);
-                  }}
-                  className="hover:cursor-pointer w-full text-xl"
-                  size="lg"
-                >
-                  首页
-                </Link>
-              </NavbarMenuItem>
-              <NavbarMenuItem>
-                <Link
-                  color={`${currRouter == "about" ? "primary" : "foreground"}`}
-                  onPress={() => {
-                    setCurrRouter("about");
-                    setIsMenuOpen(false);
-                  }}
-                  className="hover:cursor-pointer w-full text-xl"
-                  size="lg"
-                >
-                  关于
-                </Link>
-              </NavbarMenuItem>
-            </NavbarMenu>
-          </Navbar>
-          <>{currComp}</>
+      <div className="-z-10 min-h-screen0 w-full bg-slate-100 dark:bg-neutral-950 dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] text-black dark:text-white ">
+        <div className="flex flex-col items-center px-4 md:px-8 lg:px-16">
+          <Navbar colorMode={colorMode} setColorMode={setColorMode} />
+          <Home theme={theme} />
+          <Tech />
+          <Projects theme={theme} />
+          <Contact />
         </div>
-      </Providers>
+      </div>
     </body>
   );
 }
