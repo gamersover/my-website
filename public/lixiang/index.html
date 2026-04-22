@@ -1,0 +1,1231 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>曹钦平 · AI安全工程体系</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0a0b0e;
+        --bg2: #0f1115;
+        --bg3: #141720;
+        --border: rgba(255, 255, 255, 0.06);
+        --border2: rgba(255, 255, 255, 0.12);
+        --accent: #00e5ff;
+        --accent2: #7c3aed;
+        --accent3: #f59e0b;
+        --text: #e2e8f0;
+        --text2: #94a3b8;
+        --text3: #475569;
+        --green: #10b981;
+        --red: #ef4444;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Noto Sans SC", sans-serif;
+        overflow-x: hidden;
+        line-height: 1.6;
+      }
+
+      /* ── NOISE OVERLAY ── */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.4;
+      }
+
+      /* ── GRID BG ── */
+      .grid-bg {
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+        background-size: 60px 60px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ── NAV ── */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        padding: 16px 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border);
+        background: rgba(10, 11, 14, 0.85);
+        backdrop-filter: blur(12px);
+      }
+
+      .nav-logo {
+        font-family: "DM Mono", monospace;
+        font-size: 13px;
+        color: var(--accent);
+        letter-spacing: 0.08em;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 32px;
+        list-style: none;
+      }
+
+      .nav-links a {
+        font-family: "DM Mono", monospace;
+        font-size: 12px;
+        color: var(--text2);
+        text-decoration: none;
+        letter-spacing: 0.05em;
+        transition: color 0.2s;
+      }
+
+      .nav-links a:hover {
+        color: var(--accent);
+      }
+
+      /* ── HERO ── */
+      .hero {
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 120px 48px 80px;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .hero-content {
+        max-width: 800px;
+      }
+
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border: 1px solid rgba(0, 229, 255, 0.3);
+        border-radius: 2px;
+        font-family: "DM Mono", monospace;
+        font-size: 11px;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 32px;
+        background: rgba(0, 229, 255, 0.05);
+      }
+
+      .badge-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(0.8);
+        }
+      }
+
+      .hero h1 {
+        font-family: "Syne", sans-serif;
+        font-size: clamp(48px, 6vw, 80px);
+        font-weight: 800;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        margin-bottom: 8px;
+      }
+
+      .hero h1 .name {
+        display: block;
+        color: var(--text);
+      }
+
+      .hero h1 .title-line {
+        display: block;
+        color: transparent;
+        -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+      }
+
+      .hero-sub {
+        font-size: 17px;
+        color: var(--text2);
+        line-height: 1.9;
+        max-width: 620px;
+        margin: 24px 0 40px;
+        font-weight: 300;
+      }
+
+      .hero-metrics {
+        display: flex;
+        gap: 40px;
+        flex-wrap: wrap;
+      }
+
+      .metric {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .metric-value {
+        font-family: "Syne", sans-serif;
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--accent);
+        line-height: 1;
+      }
+
+      .metric-label {
+        font-family: "DM Mono", monospace;
+        font-size: 11px;
+        color: var(--text3);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      /* ── ARCH SECTION ── */
+      section {
+        position: relative;
+        z-index: 1;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 80px 48px;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: baseline;
+        gap: 16px;
+        margin-bottom: 48px;
+      }
+
+      .section-num {
+        font-family: "DM Mono", monospace;
+        font-size: 12px;
+        color: var(--text3);
+        letter-spacing: 0.1em;
+      }
+
+      .section-title {
+        font-family: "Syne", sans-serif;
+        font-size: 32px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+
+      .section-line {
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+        max-width: 200px;
+      }
+
+      /* ── ARCHITECTURE DIAGRAM ── */
+      .arch-diagram {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 48px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .arch-diagram::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent),
+          transparent
+        );
+        opacity: 0.5;
+      }
+
+      .arch-layers {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .arch-layer {
+        display: flex;
+        align-items: stretch;
+        gap: 16px;
+      }
+
+      .layer-label {
+        writing-mode: vertical-lr;
+        text-orientation: mixed;
+        font-family: "DM Mono", monospace;
+        font-size: 11px;
+        color: var(--text3);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        min-width: 24px;
+      }
+
+      .layer-cards {
+        display: flex;
+        gap: 12px;
+        flex: 1;
+        flex-wrap: wrap;
+      }
+
+      .arch-card {
+        flex: 1;
+        min-width: 160px;
+        padding: 16px 20px;
+        border-radius: 3px;
+        border: 1px solid var(--border);
+        background: var(--bg3);
+        transition:
+          border-color 0.2s,
+          transform 0.2s;
+        cursor: default;
+      }
+
+      .arch-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--border2);
+      }
+
+      .arch-card.accent {
+        border-color: rgba(0, 229, 255, 0.25);
+        background: rgba(0, 229, 255, 0.04);
+      }
+      .arch-card.purple {
+        border-color: rgba(124, 58, 237, 0.3);
+        background: rgba(124, 58, 237, 0.04);
+      }
+      .arch-card.amber {
+        border-color: rgba(245, 158, 11, 0.25);
+        background: rgba(245, 158, 11, 0.04);
+      }
+      .arch-card.green {
+        border-color: rgba(16, 185, 129, 0.25);
+        background: rgba(16, 185, 129, 0.04);
+      }
+
+      .arch-card-title {
+        font-family: "Syne", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+
+      .arch-card.accent .arch-card-title {
+        color: var(--accent);
+      }
+      .arch-card.purple .arch-card-title {
+        color: #a78bfa;
+      }
+      .arch-card.amber .arch-card-title {
+        color: var(--accent3);
+      }
+      .arch-card.green .arch-card-title {
+        color: var(--green);
+      }
+
+      .arch-card-desc {
+        font-size: 13px;
+        color: var(--text3);
+        line-height: 1.6;
+      }
+
+      .arch-arrow {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 4px 0;
+        color: var(--text3);
+        font-size: 16px;
+      }
+
+      /* ── PROJECT GRID ── */
+      .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 20px;
+      }
+
+      .project-card {
+        background: var(--bg2);
+        padding: 40px 40px 40px 44px;
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--border);
+        position: relative;
+        overflow: hidden;
+        transition: border-color 0.3s, transform 0.2s;
+        cursor: default;
+      }
+
+      .project-card:hover {
+        border-color: var(--border2);
+        transform: translateY(-2px);
+      }
+
+      .project-card.tag-infra-card { border-left-color: rgba(0, 229, 255, 0.5); }
+      .project-card.tag-platform-card { border-left-color: rgba(124, 58, 237, 0.5); }
+      .project-card.tag-app-card { border-left-color: rgba(16, 185, 129, 0.5); }
+      .project-card.tag-product-card { border-left-color: rgba(245, 158, 11, 0.5); }
+
+      .project-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          transparent 70%,
+          rgba(0, 229, 255, 0.03)
+        );
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .project-card:hover::after {
+        opacity: 1;
+      }
+
+      .project-card.featured {
+        /* no span */
+      }
+
+      .project-tag {
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 3px 8px;
+        border-radius: 2px;
+        display: inline-block;
+        margin-bottom: 16px;
+      }
+
+      .tag-infra {
+        background: rgba(0, 229, 255, 0.1);
+        color: var(--accent);
+        border: 1px solid rgba(0, 229, 255, 0.2);
+      }
+      .tag-platform {
+        background: rgba(124, 58, 237, 0.1);
+        color: #a78bfa;
+        border: 1px solid rgba(124, 58, 237, 0.2);
+      }
+      .tag-app {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--green);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+      }
+      .tag-product {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--accent3);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+      }
+
+      .project-title {
+        font-family: "Syne", sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        letter-spacing: -0.01em;
+      }
+
+      .project-desc {
+        font-size: 15px;
+        color: var(--text2);
+        line-height: 1.8;
+        margin-bottom: 22px;
+        font-weight: 300;
+      }
+
+      .project-highlights {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .project-highlights li {
+        display: block;
+        font-size: 14px;
+        color: var(--text2);
+        line-height: 1.7;
+        padding-left: 14px;
+        position: relative;
+      }
+
+      .project-highlights li::before {
+        content: "▸";
+        color: var(--text3);
+        position: absolute;
+        left: 0;
+        top: 0;
+        font-size: 10px;
+        line-height: 1.9;
+      }
+
+      .project-highlights li strong {
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      .project-metrics {
+        display: flex;
+        gap: 24px;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        flex-wrap: wrap;
+      }
+
+      .pm {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .pm-value {
+        font-family: "Syne", sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--accent);
+      }
+
+      .pm-label {
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        color: var(--text3);
+        letter-spacing: 0.08em;
+      }
+
+      .pm-value.green {
+        color: var(--green);
+      }
+      .pm-value.amber {
+        color: var(--accent3);
+      }
+      .pm-value.purple {
+        color: #a78bfa;
+      }
+
+      /* ── FEATURED CARD COLS ── */
+      .featured-inner {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        align-items: start;
+      }
+
+      @media (max-width: 900px) {
+        .featured-inner {
+          grid-template-columns: 1fr;
+        }
+        .project-card.featured {
+          grid-column: span 1;
+        }
+      }
+
+      /* ── TECH SECTION ── */
+      .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 12px;
+      }
+
+      .tech-item {
+        padding: 16px 20px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: border-color 0.2s;
+      }
+
+      .tech-item:hover {
+        border-color: var(--border2);
+      }
+
+      .tech-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .tech-name {
+        font-size: 15px;
+        color: var(--text2);
+      }
+
+      /* ── TIMELINE ── */
+      .timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        position: relative;
+      }
+
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 12px;
+        bottom: 12px;
+        width: 1px;
+        background: linear-gradient(
+          to bottom,
+          var(--accent),
+          var(--accent2),
+          transparent
+        );
+        opacity: 0.3;
+      }
+
+      .tl-item {
+        display: flex;
+        gap: 32px;
+        padding: 0 0 40px 32px;
+        position: relative;
+      }
+
+      .tl-item::before {
+        content: "";
+        position: absolute;
+        left: -4px;
+        top: 8px;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--bg);
+        border: 1px solid var(--accent);
+      }
+
+      .tl-content {
+        flex: 1;
+      }
+
+      .tl-phase {
+        font-family: "DM Mono", monospace;
+        font-size: 10px;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+
+      .tl-title {
+        font-family: "Syne", sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .tl-desc {
+        font-size: 15px;
+        color: var(--text2);
+        line-height: 1.8;
+        font-weight: 300;
+      }
+
+      /* ── FOOTER ── */
+      footer {
+        position: relative;
+        z-index: 1;
+        border-top: 1px solid var(--border);
+        padding: 40px 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .footer-text {
+        font-family: "DM Mono", monospace;
+        font-size: 11px;
+        color: var(--text3);
+        letter-spacing: 0.06em;
+      }
+
+      /* ── GLOW ── */
+      .hero-glow {
+        position: absolute;
+        right: -100px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(
+          circle,
+          rgba(0, 229, 255, 0.05) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      /* ── DIVIDER ── */
+      .divider {
+        border: none;
+        height: 1px;
+        background: var(--border);
+        margin: 0 48px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ── SCROLL REVEAL ── */
+      .reveal {
+        opacity: 0;
+        transform: translateY(20px);
+        transition:
+          opacity 0.6s ease,
+          transform 0.6s ease;
+      }
+
+      .reveal.visible {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* ── RESPONSIVE ── */
+      @media (max-width: 768px) {
+        nav {
+          padding: 14px 24px;
+        }
+        .nav-links {
+          gap: 20px;
+        }
+        section {
+          padding: 60px 24px;
+        }
+        .hero {
+          padding: 100px 24px 60px;
+        }
+        footer {
+          padding: 32px 24px;
+          flex-direction: column;
+          gap: 12px;
+          text-align: center;
+        }
+        .divider {
+          margin: 0 24px;
+        }
+        .arch-diagram {
+          padding: 24px;
+        }
+        .arch-layer {
+          flex-direction: column;
+        }
+        .layer-label {
+          writing-mode: horizontal-tb;
+          transform: none;
+        }
+        .projects-grid {
+          grid-template-columns: 1fr;
+        }
+        .project-card.featured {
+          grid-column: span 1;
+        }
+        .featured-inner {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grid-bg"></div>
+
+    <!-- NAV -->
+    <nav>
+      <div class="nav-logo">CAO_QINPING // AI_SEC_ENGINEER</div>
+      <ul class="nav-links">
+        <li><a href="#architecture">架构</a></li>
+        <li><a href="#projects">项目</a></li>
+        <li><a href="#build">构建历程</a></li>
+        <li><a href="#stack">技术栈</a></li>
+      </ul>
+    </nav>
+
+    <!-- HERO -->
+    <div style="position: relative; z-index: 1">
+      <div class="hero">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            AI SECURITY ENGINEER · AGENT SYSTEMS ARCHITECT
+          </div>
+          <h1>
+            <span class="name">曹钦平</span>
+            <span class="title-line">从框架到产品</span>
+          </h1>
+          <p class="hero-sub">
+            漏洞管理从不是孤立的点状工作——它需要覆盖<strong style="color: var(--text); font-weight: 500">发现 → 分析 → 修复 → 验证 → 治理</strong>的完整生命周期。在 Agent 范式兴起的窗口期，我选择从最底层的框架能力建起，系统性构建一套让<strong style="color: var(--text); font-weight: 500">漏洞智能治理真正落地</strong>的 AI 工程体系：基础设施可复用、应用层可快速扩展、全链路可观测可信任。
+          </p>
+          <div class="hero-metrics">
+            <div class="metric">
+              <span class="metric-value">6 min</span>
+              <span class="metric-label">告警深度分析</span>
+            </div>
+            <div class="metric">
+              <span class="metric-value">100%</span>
+              <span class="metric-label">漏洞分析准确率</span>
+            </div>
+            <div class="metric">
+              <span class="metric-value">500+</span>
+              <span class="metric-label">Codian 覆盖用户</span>
+            </div>
+            <div class="metric">
+              <span class="metric-value">5+</span>
+              <span class="metric-label">上线安全 Agent</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-glow"></div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- ARCHITECTURE -->
+    <section id="architecture">
+      <div class="section-header reveal">
+        <span class="section-num">01</span>
+        <h2 class="section-title">三层工程体系</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="arch-diagram reveal">
+        <!-- 设计理念 -->
+        <div style="margin-bottom: 40px; padding: 24px 28px; border: 1px solid rgba(0,229,255,0.15); border-left: 3px solid var(--accent); background: rgba(0,229,255,0.03); border-radius: 3px;">
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px;">DESIGN PHILOSOPHY</div>
+          <p style="font-size: 16px; color: var(--text2); line-height: 1.9; font-weight: 300;">
+            为什么需要这套体系？安全团队面对的不是单一漏洞，而是<strong style="color: var(--text); font-weight: 500">持续涌入的告警噪声、跨系统的漏洞扩散、难以闭环的修复验证</strong>。传统方案只能点状响应，无法从全局视角驱动治理。
+            我的思路是：先打通底层框架的流式与并行能力，让 Agent 具备生产级可靠性；再构建可观测的平台层，让复杂的多 Agent 协作对工程师透明可调；最终在应用层实现<strong style="color: var(--text); font-weight: 500">漏洞全生命周期的智能闭环</strong>——从代码提交到云上运行时，每个环节都有 Agent 在守护。
+          </p>
+        </div>
+        <div class="arch-layers">
+          <div class="arch-layer">
+            <span class="layer-label">应用层</span>
+            <div class="layer-cards">
+              <div class="arch-card green">
+                <div class="arch-card-title">云上漏洞分析</div>
+                <div class="arch-card-desc">
+                  90% 漏洞类型覆盖<br />准确率 100%
+                </div>
+              </div>
+              <div class="arch-card green">
+                <div class="arch-card-title">Skill 安全审查</div>
+                <div class="arch-card-desc">智能安全审查<br />上传平台接入</div>
+              </div>
+              <div class="arch-card green">
+                <div class="arch-card-title">MR 代码审查</div>
+                <div class="arch-card-desc">GitLab 集成<br />自动触发</div>
+              </div>
+              <div class="arch-card green">
+                <div class="arch-card-title">API 安全审查</div>
+                <div class="arch-card-desc">公网暴露面<br />全量扫描</div>
+              </div>
+              <div class="arch-card amber">
+                <div class="arch-card-title">本地代码审查</div>
+                <div class="arch-card-desc">Skill → Plugin<br />本地闭环</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arch-arrow">
+            ↑&nbsp;&nbsp;&nbsp;平台能力复用，新 Agent 只需设计 Prompt
+            和工具即可接入
+          </div>
+
+          <div class="arch-layer">
+            <span class="layer-label">平台层</span>
+            <div class="layer-cards">
+              <div class="arch-card accent">
+                <div class="arch-card-title">告警分析多 Agent 后端</div>
+                <div class="arch-card-desc">
+                  分层编排 · 快速研判 · 上下文注入<br />深度分析 ≤6min ·
+                  快速分析 1-2min
+                </div>
+              </div>
+              <div class="arch-card purple">
+                <div class="arch-card-title">透明化 Agent 前端</div>
+                <div class="arch-card-desc">
+                  全链路追踪 · IDE 面板 · SSE 流式<br />黑盒 →
+                  可观测可调试可信任
+                </div>
+              </div>
+              <div class="arch-card amber">
+                <div class="arch-card-title">Codian 独立产品</div>
+                <div class="arch-card-desc">
+                  GitLab OAuth · Webhook 订阅<br />对话式漏洞分析 · 500+ 用户
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arch-arrow">
+            ↑&nbsp;&nbsp;&nbsp;框架层提供流式、并行、动态子 Agent 等核心能力
+          </div>
+
+          <div class="arch-layer">
+            <span class="layer-label">框架层</span>
+            <div class="layer-cards">
+              <div class="arch-card accent" style="flex: none; min-width: 100%">
+                <div class="arch-card-title">Agno 框架深度改造</div>
+                <div class="arch-card-desc">
+                  reasoning_content 流式 · 并行工具与 Agent 调用 · 子 Agent
+                  流式输出 · 全异步改造 · spawn_agent 动态创建子 Agent
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- PROJECTS -->
+    <section id="projects">
+      <div class="section-header reveal">
+        <span class="section-num">02</span>
+        <h2 class="section-title">核心项目详情</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="projects-grid">
+        <!-- P1: Agent Framework -->
+        <div class="project-card tag-infra-card reveal">
+          <span class="project-tag tag-infra">框架层 · 基础设施</span>
+          <h3 class="project-title">Agno 框架改造</h3>
+          <p class="project-desc">
+            在多 Agent 框架尚不成熟、专用 Agent 模型尚未出现的时代，对 Agno
+            框架进行深度改造，成为整个体系的技术地基。
+          </p>
+          <ul class="project-highlights">
+            <li><strong>reasoning_content 流式输出</strong>——将推理过程实时暴露给前端</li>
+            <li><strong>并行工具与 Agent 调用</strong>——大幅降低多 Agent 协作延迟</li>
+            <li><strong>子 Agent 流式输出</strong>——支持 toolcall/reasoning 事件透传</li>
+            <li><strong>全异步改造</strong>——提升并发吞吐量</li>
+            <li><strong>spawn_agent</strong>——运行时动态创建子 Agent，支持弹性任务分解</li>
+          </ul>
+        </div>
+
+        <!-- P2: Alert Analysis -->
+        <div class="project-card tag-platform-card reveal">
+          <span class="project-tag tag-platform">平台层 · 告警分析</span>
+          <h3 class="project-title">告警分析多 Agent 系统</h3>
+          <p class="project-desc">
+            分层编排的安全告警智能研判系统，针对海量重复告警设计了快速/深度双模式分析策略。
+          </p>
+          <ul class="project-highlights">
+            <li><strong>分层架构</strong>：主 Agent + 日志分析 Agent（DNS/HIDS/EDR 等子 Agent）+ 知识检索 Agent</li>
+            <li><strong>快速研判</strong>：基于历史报告快速判断，跳过深度调查，1-2 分钟出结果</li>
+            <li><strong>上下文注入</strong>：注入近期告警列表，自动识别重复告警避免重复分析</li>
+            <li><strong>深度分析</strong>：复杂告警全链路分析，6 分钟内完成</li>
+          </ul>
+          <div class="project-metrics">
+            <div class="pm">
+              <span class="pm-value">1-2min</span
+              ><span class="pm-label">快速研判</span>
+            </div>
+            <div class="pm">
+              <span class="pm-value">6min</span
+              ><span class="pm-label">深度分析</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- P3: Agent Frontend - Featured -->
+        <div class="project-card tag-platform-card reveal">
+          <span class="project-tag tag-platform">平台层 · 可观测性</span>
+          <h3 class="project-title">透明化 Agent 前端</h3>
+          <p class="project-desc">
+            不只是交互界面——核心定位是 Agent 行为可观测平台，将 Agent
+            从黑盒变为可调试、可信任的透明系统，加速迭代优化。
+          </p>
+          <ul class="project-highlights">
+            <li><strong>嵌套 Agent 全链路追踪</strong>：可查看会话中所有 Agent（含嵌套子 Agent）的全过程，包括 reasoning 和 toolcall</li>
+            <li><strong>IDE 面板</strong>：Agent 修复代码后，支持查看代码变更并一键 apply GitLab 变更</li>
+            <li><strong>流式实时渲染</strong>：工具调用流式支持，前端可实时流式渲染 UI，体验无卡顿</li>
+            <li><strong>系统定位创新</strong>：将 Agent 前端重新定义为「观测与调试」工具，而非单纯「交互」工具</li>
+          </ul>
+        </div>
+
+        <!-- P4: Local Skill -->
+        <div class="project-card tag-product-card reveal">
+          <span class="project-tag tag-product">产品层 · 本地工具</span>
+          <h3 class="project-title">本地代码安全审查 Skill</h3>
+          <p class="project-desc">
+            从 Skill 演进为
+            Plugin，用户本地安装即可使用的完整代码安全审查工具，具备完整数据闭环。
+          </p>
+          <ul class="project-highlights">
+            <li><strong>多维审查</strong>：代码漏洞 + SCA 依赖分析 + API 接口 + 污染链漏洞</li>
+            <li><strong>本地数据闭环</strong>：所有扫描记录结构化存储本地，含 meta 和漏洞信息，支持历史查询与漏洞去重</li>
+            <li><strong>修复决策 hook</strong>：PostToolCall hook 触发修复，遥测数据上报云端接力</li>
+            <li><strong>灵活扫描范围</strong>：full 全量 / diff 最新 commit / file 单文件</li>
+            <li><strong>完整闭环</strong>：漏洞审查 → 修复 → 测试用例生成</li>
+          </ul>
+        </div>
+
+        <!-- P5: Codian -->
+        <div class="project-card tag-product-card reveal">
+          <span class="project-tag tag-product">产品层 · Codian</span>
+          <h3 class="project-title">Codian 安全代码平台</h3>
+          <p class="project-desc">
+            面向全公司研发人员的 AI 安全代码审查平台，覆盖从 MR
+            自动审查到对话式漏洞分析的完整工作流。
+          </p>
+          <ul class="project-highlights">
+            <li><strong>GitLab OAuth 认证</strong>：企业级权限管理</li>
+            <li><strong>Webhook 一键订阅</strong>：MR 事件自动触发 Agent 代码审查</li>
+            <li><strong>对话式漏洞分析</strong>：选择仓库和分支，流式返回分析结果</li>
+            <li><strong>代码差异 Apply</strong>：一键应用 AI 生成代码变更并自动创建 MR</li>
+            <li><strong>本地遥测数据展示</strong>：集成 Skill 上报的 repo commit 扫描漏洞详情</li>
+          </ul>
+          <div class="project-metrics">
+            <div class="pm">
+              <span class="pm-value green">500+</span
+              ><span class="pm-label">覆盖用户</span>
+            </div>
+            <div class="pm">
+              <span class="pm-value amber">全员</span
+              ><span class="pm-label">公司覆盖</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- P6: Security Agents -->
+        <div class="project-card tag-app-card reveal">
+          <span class="project-tag tag-app">应用层 · 批量落地</span>
+          <h3 class="project-title">多场景安全 Agent 矩阵</h3>
+          <p class="project-desc">
+            基于前期沉淀的平台能力，新接入 Agent 仅需设计 Prompt
+            和工具，实现快速批量落地。
+          </p>
+          <ul class="project-highlights">
+            <li><strong>云上漏洞分析</strong>：覆盖 90% 漏洞类型，准确率 100%，极大提升漏洞运营效率</li>
+            <li><strong>Skill 安全审查</strong>：针对公司 Skill 上传平台的智能安全审查流程</li>
+            <li><strong>MR 代码审查</strong>：已在 Codian 独立平台上线并服务全体研发</li>
+            <li><strong>API 安全审查</strong>：针对公网暴露 API 服务的全量安全扫描</li>
+          </ul>
+          <div class="project-metrics">
+            <div class="pm">
+              <span class="pm-value">90%</span
+              ><span class="pm-label">漏洞类型覆盖</span>
+            </div>
+            <div class="pm">
+              <span class="pm-value green">100%</span
+              ><span class="pm-label">分析准确率</span>
+            </div>
+            <div class="pm">
+              <span class="pm-value purple">4+</span
+              ><span class="pm-label">上线 Agent</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- BUILD JOURNEY -->
+    <section id="build">
+      <div class="section-header reveal">
+        <span class="section-num">03</span>
+        <h2 class="section-title">构建历程</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="timeline reveal">
+        <div class="tl-item">
+          <div class="tl-content">
+            <div class="tl-phase">Phase 01 · 框架先行</div>
+            <div class="tl-title">Agno 框架深度改造</div>
+            <div class="tl-desc">
+              在没有成熟 Agent 框架、没有专用 Agent 模型的时代率先入场。改造
+              Agno 以支持流式推理、并行调用、动态子
+              Agent，为后续所有项目奠定技术底座。
+            </div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-content">
+            <div class="tl-phase">Phase 02 · 平台构建</div>
+            <div class="tl-title">多 Agent 后端 + 透明化前端</div>
+            <div class="tl-desc">
+              基于改造后的框架，构建告警分析多 Agent
+              系统（分层编排、双模式研判），同步开发透明化 Agent 前端，将 Agent
+              运行行为完全可观测，实现快速调试迭代。
+            </div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-content">
+            <div class="tl-phase">Phase 03 · 产品化</div>
+            <div class="tl-title">Codian + 本地审查 Skill</div>
+            <div class="tl-desc">
+              将平台能力产品化：Codian 面向全公司研发落地 MR
+              审查和对话式分析；本地 Skill
+              将能力延伸至开发者本地环境，构建遥测→云端接力的完整数据闭环。
+            </div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-content">
+            <div class="tl-phase">Phase 04 · 规模化</div>
+            <div class="tl-title">5+ 安全 Agent 批量上线</div>
+            <div class="tl-desc">
+              平台能力成熟后，云上漏洞分析、Skill 安全审查、API
+              安全审查等多个场景 Agent 快速接入上线。新 Agent
+              的落地成本从「从零搭建」降低为「设计 Prompt 和工具」。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- TECH STACK -->
+    <section id="stack">
+      <div class="section-header reveal">
+        <span class="section-num">04</span>
+        <h2 class="section-title">技术栈</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="tech-grid reveal">
+        <!-- 语言 & 框架 -->
+        <div class="tech-item">
+          <span class="tech-dot" style="background: #00e5ff"></span>
+          <span class="tech-name">Python · FastAPI</span>
+        </div>
+        <div class="tech-item">
+          <span class="tech-dot" style="background: #f59e0b"></span>
+          <span class="tech-name">TypeScript · React</span>
+        </div>
+        <!-- Agent 框架 -->
+        <div class="tech-item" style="border-color: rgba(124,58,237,0.3);">
+          <span class="tech-dot" style="background: #7c3aed"></span>
+          <a href="https://github.com/agno-agi/agno" target="_blank" rel="noopener"
+             style="color: #a78bfa; text-decoration: none; font-size: 15px; display: flex; align-items: center; gap: 6px;">
+            Agno Agent Framework
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;opacity:0.6">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/>
+              <line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+          </a>
+        </div>
+        <!-- AI 能力 -->
+        <div class="tech-item">
+          <span class="tech-dot" style="background: #10b981"></span>
+          <span class="tech-name">RAG · 向量检索</span>
+        </div>
+        <div class="tech-item">
+          <span class="tech-dot" style="background: #00e5ff"></span>
+          <span class="tech-name">多 Agent 编排</span>
+        </div>
+        <div class="tech-item">
+          <span class="tech-dot" style="background: #10b981"></span>
+          <span class="tech-name">MCP · Claude Code Skill</span>
+        </div>
+        <!-- 集成 -->
+        <div class="tech-item">
+          <span class="tech-dot" style="background: #ef4444"></span>
+          <span class="tech-name">GitLab API · OAuth 2.0</span>
+        </div>
+        <!-- 安全能力 -->
+        <div class="tech-item">
+          <span class="tech-dot" style="background: #ef4444"></span>
+          <span class="tech-name">安全审计 · SCA</span>
+        </div>
+        <!-- 基础设施 -->
+        <div class="tech-item">
+          <span class="tech-dot" style="background: #7c3aed"></span>
+          <span class="tech-name">Kubernetes · Docker</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <span class="footer-text">曹钦平 · AI Security Engineer</span>
+      <span
+        class="footer-text"
+        style="font-family: &quot;DM Mono&quot;, monospace; font-size: 10px"
+        >BUILT WITH PRECISION · 2024–2025</span
+      >
+    </footer>
+
+    <script>
+      // Scroll reveal
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+            }
+          });
+        },
+        { threshold: 0.08 },
+      );
+
+      document
+        .querySelectorAll(".reveal")
+        .forEach((el) => observer.observe(el));
+
+      // Stagger children
+      document.querySelectorAll(".projects-grid").forEach((grid) => {
+        grid.querySelectorAll(".project-card").forEach((card, i) => {
+          card.style.transitionDelay = i * 0.08 + "s";
+        });
+      });
+    </script>
+  </body>
+</html>

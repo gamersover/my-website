@@ -26,7 +26,7 @@ export default function App() {
 
   return (
     <body className={theme}>
-      <div className="-z-10 min-h-screen0 w-full bg-slate-100 dark:bg-neutral-950 dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] text-black dark:text-white ">
+      <div className="antialiased scroll-smooth -z-10 min-h-screen0 w-full bg-slate-100 dark:bg-neutral-950 dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] text-black dark:text-white ">
         <div className="flex flex-col items-center px-4 md:px-8 lg:px-16">
           <Navbar colorMode={colorMode} setColorMode={setColorMode} />
           <Home theme={theme} />
