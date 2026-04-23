@@ -671,6 +671,83 @@
         font-weight: 300;
       }
 
+      /* ── AWARDS ── */
+      .awards-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .award-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 24px 28px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-left: 3px solid rgba(245, 158, 11, 0.5);
+        border-radius: 3px;
+        transition: border-color 0.2s, transform 0.2s;
+      }
+
+      .award-item:hover {
+        border-color: var(--border2);
+        transform: translateX(4px);
+      }
+
+      .award-date {
+        font-family: 'DM Mono', monospace;
+        font-size: 12px;
+        color: var(--accent3);
+        letter-spacing: 0.08em;
+        white-space: nowrap;
+        min-width: 100px;
+        padding-top: 2px;
+      }
+
+      .award-content {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .award-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: 'DM Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 3px 8px;
+        border-radius: 2px;
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--accent3);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        width: fit-content;
+      }
+
+      .award-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      .award-desc {
+        font-size: 14px;
+        color: var(--text2);
+        line-height: 1.7;
+        font-weight: 300;
+      }
+
+      @media (max-width: 768px) {
+        .award-item {
+          flex-direction: column;
+          gap: 8px;
+        }
+      }
+
       /* ── FOOTER ── */
       footer {
         position: relative;
@@ -785,6 +862,7 @@
         <li><a href="#architecture">架构</a></li>
         <li><a href="#projects">项目</a></li>
         <li><a href="#build">构建历程</a></li>
+        <li><a href="#awards">获奖情况</a></li>
         <li><a href="#stack">技术栈</a></li>
       </ul>
     </nav>
@@ -1131,10 +1209,56 @@
 
     <hr class="divider" />
 
+    <!-- AWARDS -->
+    <section id="awards">
+      <div class="section-header reveal">
+        <span class="section-num">04</span>
+        <h2 class="section-title">获奖情况</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="awards-list reveal">
+        <div class="award-item">
+          <span class="award-date">2024.10</span>
+          <div class="award-content">
+            <span class="award-badge">🏆 竞赛</span>
+            <div class="award-title">CCF 大模型安全挑战赛</div>
+            <div class="award-desc">赛道一 <strong style="color: var(--accent3);">一等奖</strong> · 赛道二 <strong style="color: var(--text);">三等奖</strong></div>
+          </div>
+        </div>
+        <div class="award-item">
+          <span class="award-date">2024.11</span>
+          <div class="award-content">
+            <span class="award-badge">🏆 竞赛</span>
+            <div class="award-title">全球 AI 大模型攻防挑战赛</div>
+            <div class="award-desc"><strong style="color: var(--accent3);">杰出方案奖</strong> · <strong style="color: var(--text);">季军奖</strong></div>
+          </div>
+        </div>
+        <div class="award-item">
+          <span class="award-date">2024 年末</span>
+          <div class="award-content">
+            <span class="award-badge">⭐ 团队荣誉</span>
+            <div class="award-title">年度团队与个人表彰</div>
+            <div class="award-desc"><strong style="color: var(--accent3);">最佳讲师奖</strong> · <strong style="color: var(--text);">高效能团队奖</strong></div>
+          </div>
+        </div>
+        <div class="award-item">
+          <span class="award-date">2026 Q1</span>
+          <div class="award-content">
+            <span class="award-badge">⭐ 个人荣誉</span>
+            <div class="award-title">灯塔领航奖</div>
+            <div class="award-desc">2026 年第一季度获得 <strong style="color: var(--accent3);">灯塔领航奖</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
     <!-- TECH STACK -->
     <section id="stack">
       <div class="section-header reveal">
-        <span class="section-num">04</span>
+        <span class="section-num">05</span>
         <h2 class="section-title">技术栈</h2>
         <div class="section-line"></div>
       </div>
