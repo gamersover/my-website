@@ -1,3 +1,4 @@
+// @ts-ignore Next.js resolves global CSS imports at build time
 import "./globals.css";
 import type { Metadata } from "next";
 
@@ -22,5 +23,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <html lang="en">{children}</html>;
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
 }
