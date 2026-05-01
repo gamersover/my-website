@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { motion } from "framer-motion";
 import {
   BiBookOpen,
   BiCodeAlt,
@@ -98,6 +99,21 @@ const experiences = [
 const labelClass =
   "text-xs font-semibold uppercase tracking-[0.22em] text-[#766c60]";
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 18 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const fadeIn = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+};
+
+const transition = {
+  duration: 0.58,
+  ease: [0.22, 1, 0.36, 1],
+};
+
 export default function NewHomePageClient() {
   const [themeId, setThemeId] = useState(defaultThemeId);
 
@@ -128,7 +144,13 @@ export default function NewHomePageClient() {
       style={themeStyle}
     >
       <div className="mx-auto w-full max-w-[1180px] px-5 sm:px-8 lg:px-10">
-        <header className="flex items-center justify-between border-b border-[#d8ccbc] py-5">
+        <motion.header
+          variants={fadeIn}
+          initial="hidden"
+          animate="visible"
+          transition={{ duration: 0.45 }}
+          className="flex items-center justify-between border-b border-[#d8ccbc] py-5"
+        >
           <Link href="/" aria-label="返回旧首页">
             <Image
               src="/logo.svg"
@@ -140,8 +162,8 @@ export default function NewHomePageClient() {
             />
           </Link>
 
-          <div className="hidden items-center gap-8 md:flex">
-            <nav aria-label="主要页面" className="flex items-center gap-8">
+          <div className="flex items-center gap-4 md:gap-8">
+            <nav aria-label="主要页面" className="hidden items-center gap-8 md:flex">
               {works.map((item) => (
                 <a
                   key={item.title}
@@ -155,7 +177,7 @@ export default function NewHomePageClient() {
               ))}
             </nav>
 
-            <div className="flex items-center gap-2 border-l border-[#d8ccbc] pl-6">
+            <div className="flex items-center gap-2 md:border-l md:border-[#d8ccbc] md:pl-6">
               {themeOptions.map((theme) => {
                 const isActive = theme.id === activeTheme.id;
 
@@ -167,7 +189,7 @@ export default function NewHomePageClient() {
                     aria-pressed={isActive}
                     title={theme.name}
                     onClick={() => setTheme(theme.id)}
-                    className={`h-4 w-4 rounded-full border transition ${
+                    className={`h-5 w-5 rounded-full border transition md:h-4 md:w-4 ${
                       isActive
                         ? "border-[#19130f] ring-2 ring-[#19130f]/12"
                         : "border-[#d8ccbc] hover:scale-110"
@@ -178,12 +200,29 @@ export default function NewHomePageClient() {
               })}
             </div>
           </div>
-        </header>
+        </motion.header>
 
         <section className="grid gap-8 border-b border-[#d8ccbc] py-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end lg:py-12">
-          <div>
-            <p className={labelClass}>AI Agent / Security / Algorithm</p>
-            <h1
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={transition}
+          >
+            <motion.p
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ ...transition, delay: 0.05 }}
+              className={labelClass}
+            >
+              AI Agent / Security / Algorithm
+            </motion.p>
+            <motion.h1
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ ...transition, delay: 0.12 }}
               className="mt-6 text-[78px] font-normal leading-[0.92] tracking-normal sm:text-[124px] lg:text-[142px]"
               style={{
                 fontFamily:
@@ -191,16 +230,34 @@ export default function NewHomePageClient() {
               }}
             >
               陈华杰
-            </h1>
-            <p className="mt-7 max-w-3xl text-[22px] font-medium leading-10 text-[#2e2822]">
+            </motion.h1>
+            <motion.p
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ ...transition, delay: 0.2 }}
+              className="mt-7 max-w-3xl text-[22px] font-medium leading-10 text-[#2e2822]"
+            >
               一个热爱数学和代码的程序员，曾在腾讯从事算法相关工作，目前在理想汽车负责 AI Agent 与安全方向。
-            </p>
-            <p className="mt-3 max-w-2xl text-base leading-8 text-[#61574d]">
+            </motion.p>
+            <motion.p
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ ...transition, delay: 0.28 }}
+              className="mt-3 max-w-2xl text-base leading-8 text-[#61574d]"
+            >
               持续写技术文章、做工具和创作实验，也写诗稿，记录生活里的想法。
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          <aside className="border-t border-[#d8ccbc] pt-5 lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0">
+          <motion.aside
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ ...transition, delay: 0.32 }}
+            className="border-t border-[#d8ccbc] pt-5 lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0"
+          >
             <h2 className={labelClass}>Contact</h2>
             <div className="mt-5 grid gap-4">
               {contacts.map((item) => {
@@ -226,25 +283,38 @@ export default function NewHomePageClient() {
                 );
               })}
             </div>
-          </aside>
+          </motion.aside>
         </section>
 
         <section className="grid gap-10 py-10 lg:grid-cols-[minmax(0,1fr)_330px] lg:py-12">
           <section aria-labelledby="works-heading">
-            <h2 id="works-heading" className={`${labelClass} mb-5`}>
+            <motion.h2
+              id="works-heading"
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-80px" }}
+              transition={transition}
+              className={`${labelClass} mb-5`}
+            >
               Works
-            </h2>
+            </motion.h2>
 
             <nav aria-label="页面入口" className="grid gap-4 sm:grid-cols-2">
               {works.map((item, index) => {
                 const Icon = item.icon;
 
                 return (
-                  <a
+                  <motion.a
                     key={item.title}
                     href={item.href}
                     target={item.external ? "_blank" : undefined}
                     rel={item.external ? "noreferrer" : undefined}
+                    variants={fadeUp}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-80px" }}
+                    transition={{ ...transition, delay: index * 0.06 }}
                     className={`group relative flex min-h-[220px] overflow-hidden rounded-3xl border border-[#d8ccbc] p-5 transition duration-300 hover:-translate-y-1 hover:border-[var(--theme-color)] hover:bg-[#fffaf2] hover:shadow-[0_18px_45px_rgba(49,36,25,0.10)] ${item.tone}`}
                   >
                     <div className="relative z-10 flex min-h-full w-full flex-col justify-between">
@@ -271,20 +341,35 @@ export default function NewHomePageClient() {
                         <BiRightArrowAlt className="text-4xl text-[#968b7d] transition group-hover:translate-x-1 group-hover:text-[var(--theme-color)]" />
                       </div>
                     </div>
-                  </a>
+                  </motion.a>
                 );
               })}
             </nav>
           </section>
 
           <section aria-labelledby="experience-heading" className="lg:pl-4">
-            <h2 id="experience-heading" className={`${labelClass} mb-5`}>
+            <motion.h2
+              id="experience-heading"
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-80px" }}
+              transition={transition}
+              className={`${labelClass} mb-5`}
+            >
               Experience
-            </h2>
+            </motion.h2>
 
             <div className="grid gap-7">
-              {experiences.map((item) => (
-                <article key={item.company}>
+              {experiences.map((item, index) => (
+                <motion.article
+                  key={item.company}
+                  variants={fadeUp}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ ...transition, delay: index * 0.08 }}
+                >
                   <p className="text-sm font-semibold text-[#766c60]">
                     {item.period}
                   </p>
@@ -297,7 +382,7 @@ export default function NewHomePageClient() {
                   <p className="mt-3 text-sm leading-7 text-[#61574d]">
                     {item.description}
                   </p>
-                </article>
+                </motion.article>
               ))}
             </div>
           </section>

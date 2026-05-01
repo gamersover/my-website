@@ -2,78 +2,207 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-const poems = [
+type PoemItem = {
+  title: string;
+  file: string;
+  note: string;
+  accent: string;
+  text: string[];
+  wide?: boolean;
+};
+
+const poems: PoemItem[] = [
   {
     title: "庆新婚",
     file: "/poem/庆新婚.png",
     note: "喜气盈纸，落笔稳而有节。",
     accent: "嘉礼",
+    text: [
+      "群芳众蕊护新春，",
+      "百艳一枝恋旧尘。",
+      "不让须眉慷慨气，",
+      "从如洛女覆国身。",
+      "曾成傲骨凌云志，",
+      "又觅诚心知意人。",
+      "宇霁虹中飞喜鹊，",
+      "闺妆镜里映红唇。",
+    ],
   },
   {
     title: "念柳图",
     file: "/poem/念柳图.png",
     note: "枝影含烟，气息清柔而不弱。",
     accent: "春思",
+    text: [
+      "遍缕丝轻花影空，",
+      "鸟语画色映帘中。",
+      "情柳似烟袅袅起，",
+      "化作尘雨随尘风。",
+    ],
   },
   {
     title: "情有感",
     file: "/poem/情有感.png",
     note: "字里有起伏，意绪在转折处最动人。",
     accent: "心声",
+    text: [
+      "半影哀鸿寄妾伤，",
+      "孤衣破镜弄眉妆；",
+      "陈姻落尽双娥泪，",
+      "忆最倾心爱未央。",
+    ],
   },
   {
     title: "生有感",
     file: "/poem/生有感.png",
     note: "情绪铺陈更开阔，字势之间能看到层层递进。",
     accent: "生念",
+    wide: true,
+    text: [
+      "魄净七重日，",
+      "魂安一处沙。",
+      "平生趋富贵，",
+      "暮世系荣华。",
+      "善水出坚木，",
+      "春泥育毅花。",
+      "文章传万载，",
+      "绿叶蔓青崖。",
+    ],
   },
   {
     title: "死有感",
     file: "/poem/死有感.png",
     note: "题意沉着，整体更凝练，节奏也更压低了一些。",
     accent: "沉思",
+    wide: true,
+    text: [
+      "深秋叶落谢花飞，",
+      "几许忧愁几许悲；",
+      "好雨清风终散去，",
+      "夕阳皓月暂轮回；",
+      "焉无万紫争奇艳，",
+      "更有千红斗正魁；",
+      "待到新春初霁后，",
+      "凭风会自百花归。",
+    ],
   },
   {
     title: "归乡",
     file: "/poem/归乡.png",
     note: "篇幅舒展，气息平缓，像一路回望后的落笔。",
     accent: "归途",
+    text: [
+      "幽幽径远花香，林裔裳裳，落水月光，座似影叠嶂，情源系何方？",
+      "一一子规啼阳，叶迹晃晃，青风云翔，空归梦惆怅，横塘是吾乡。",
+    ],
   },
   {
     title: "来去诗",
     file: "/poem/来去诗.png",
     note: "收放之间见从容，行气舒朗。",
     accent: "往复",
+    text: [
+      "三年研究路步步实足，一首来去诗字字真心。",
+      "",
+      "来之欣欣，去之轻轻，不闻不语，不溢不惊。",
+      "诚心故致，鸣谦以行，知心故纯，知理以明。",
+      "来之糠糠，去之泱泱，不悦不愠，不曲不觞。",
+      "痴心尚溃，衔悲以杨，情心尚壁，怀悠以藏。",
+      "来之迢迢，去之夭夭，不思不寄，不怠不消。",
+      "秽心止清，守德以昭，欲心止静，效仁以韬。",
+      "来也夕夕，去也夕夕，不咽不叹，不悔不期。",
+      "仕心尝醉，夙诗以启，志心尝危，晓词以惕。",
+    ],
   },
   {
     title: "访仙",
     file: "/poem/访仙.png",
     note: "有远意，也有山行般的空灵。",
     accent: "游想",
+    wide: true,
+    text: [
+      "弄月摘星遇圣灵，",
+      "趋云驾雾访仙名。",
+      "同观柳绿梅红色，",
+      "共奏鸥琴鹤瑟声。",
+      "我与清风杯酒后，",
+      "清风送我速归行。",
+      "人间岁有浑浊气，",
+      "愿作长天一片青。",
+    ],
   },
   {
     title: "寻乐九首（其七）",
     file: "/poem/寻乐九首（其七）.png",
     note: "横向展开的章法更开阔，读起来有一种徐徐铺陈的节奏。",
     accent: "长歌",
+    wide: true,
+    text: [
+      "昔日与，饮无觞，今宵共，月半常。一旎乘辑卒逐去，万绿随风且呈黄。醉幕许开天河路，云掩乘之金銮堂，俯看浮云飘似乐，矗山皆已粟渺茫。",
+      "桃荔酒，篪籁音，寒姿艳，鹤仙鸣，霁雨花开春暖迟，庭看瑶池千百枝，月镜浩荡川瀑逝，欲渡千载也无尝，品杯枉饮歌数阕，一阕无意触神皇。",
+      "愿叹：酌不乐，乐何以哉？",
+    ],
   },
   {
     title: "酒",
     file: "/poem/酒.png",
     note: "短题却有烈度，墨色与情绪都更浓。",
     accent: "酣兴",
+    text: [
+      "醒韵十里香，",
+      "缘何寄此觞？",
+      "欲与逐流去，",
+      "又恨此杯长。",
+    ],
   },
 ];
+
+function PoemText({
+  lines,
+  className,
+  gapClassName = "gap-y-2",
+}: {
+  lines: string[];
+  className: string;
+  gapClassName?: string;
+}) {
+  const isCoupletGrid = lines.length === 8 && lines.every((line) => line !== "");
+
+  if (isCoupletGrid) {
+    return (
+      <div className={`inline-grid grid-cols-[max-content_max-content] gap-x-1.5 ${gapClassName} ${className}`}>
+        {lines.map((line, lineIndex) => (
+          <p key={`${line}-${lineIndex}`}>{line}</p>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className={`space-y-2 ${className}`}>
+      {lines.map((line, lineIndex) =>
+        line === "" ? (
+          <div key={`spacer-${lineIndex}`} className="h-2" />
+        ) : (
+          <p key={`${line}-${lineIndex}`}>{line}</p>
+        )
+      )}
+    </div>
+  );
+}
 
 export default function Poem() {
   const [selected, setSelected] = useState<number | null>(null);
   const [activePoemIndex, setActivePoemIndex] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [imageFullscreen, setImageFullscreen] = useState(false);
+  const imageScrollerRef = useRef<HTMLDivElement | null>(null);
   const poemCount = poems.length;
   const selectedPoem = useMemo(
     () => (selected === null ? null : poems[selected]),
     [selected]
   );
+  const selectedPoemIsWide = selectedPoem?.wide === true;
 
   // Swipe-right from left edge to open sidebar
   const touchStartX = useRef<number | null>(null);
@@ -148,6 +277,27 @@ export default function Poem() {
     };
   }, []);
 
+  const scrollToPoem = useCallback((index: number) => {
+    setActivePoemIndex(index);
+
+    window.setTimeout(() => {
+      document.getElementById(`poem-${index + 1}`)?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 0);
+  }, []);
+
+  const closePoem = useCallback(() => {
+    if (selected === null) {
+      return;
+    }
+
+    const closingPoemIndex = selected;
+    setSelected(null);
+    scrollToPoem(closingPoemIndex);
+  }, [scrollToPoem, selected]);
+
   useEffect(() => {
     if (selected === null) {
       document.body.style.overflow = "";
@@ -158,7 +308,12 @@ export default function Poem() {
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setSelected(null);
+        if (imageFullscreen) {
+          setImageFullscreen(false);
+          return;
+        }
+
+        closePoem();
       }
 
       if (event.key === "ArrowLeft") {
@@ -188,6 +343,13 @@ export default function Poem() {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeyDown);
     };
+  }, [closePoem, imageFullscreen, selected]);
+
+  useEffect(() => {
+    if (imageScrollerRef.current) {
+      imageScrollerRef.current.scrollLeft = 0;
+    }
+    setImageFullscreen(false);
   }, [selected]);
 
   const openPoem = (index: number) => setSelected(index);
@@ -385,6 +547,13 @@ export default function Poem() {
                   <p className="max-w-xl text-sm leading-7 text-stone-500">
                     {poem.note}
                   </p>
+                  <div className="border-t border-dashed border-stone-200 pt-4">
+                    <p className="text-[11px] tracking-[0.32em] text-stone-400">原文</p>
+                    <PoemText
+                      lines={poem.text}
+                      className="mt-3 text-sm leading-8 text-stone-700 sm:text-[15px]"
+                    />
+                  </div>
                 </div>
               </div>
             </button>
@@ -397,50 +566,148 @@ export default function Poem() {
 
       {selectedPoem && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-stone-950/90 p-4 backdrop-blur-md sm:p-6"
-          onClick={() => setSelected(null)}
+          className="fixed inset-0 z-50 flex items-stretch justify-center bg-stone-950/90 p-0 backdrop-blur-md lg:items-start lg:p-6"
+          onClick={closePoem}
         >
           <div
-            className="relative flex w-full max-w-7xl flex-col gap-5 rounded-[2rem] border border-white/10 bg-white/6 p-4 shadow-2xl shadow-black/40 sm:p-6"
+            className="relative flex h-[100dvh] w-full max-w-7xl flex-col gap-3 overflow-hidden bg-stone-950/60 p-3 shadow-2xl shadow-black/40 lg:my-0 lg:h-auto lg:max-h-[calc(100vh-3rem)] lg:gap-5 lg:rounded-[2rem] lg:border lg:border-white/10 lg:bg-white/6 lg:p-6"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4 text-white/80">
-              <div>
+            <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 pb-3 text-white/80 sm:gap-4 sm:pb-4">
+              <div className="min-w-0">
                 <p className="text-[11px] tracking-[0.35em] text-white/40">诗稿预览</p>
-                <h2 className="mt-2 text-2xl tracking-[0.24em] text-white sm:text-3xl">
+                <h2 className="mt-1 truncate text-xl tracking-[0.2em] text-white sm:mt-2 sm:text-3xl sm:tracking-[0.24em]">
                   {selectedPoem.title}
                 </h2>
               </div>
               <button
                 type="button"
-                onClick={() => setSelected(null)}
-                className="rounded-full border border-white/15 px-4 py-2 text-sm tracking-[0.2em] text-white/70 transition hover:bg-white/10 hover:text-white"
+                onClick={closePoem}
+                className="shrink-0 rounded-full border border-white/15 px-3 py-2 text-xs tracking-[0.18em] text-white/70 transition hover:bg-white/10 hover:text-white sm:px-4 sm:text-sm sm:tracking-[0.2em]"
               >
                 关闭
               </button>
             </div>
 
-            <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_220px]">
-              <div className="relative flex min-h-[50vh] items-center justify-center overflow-hidden rounded-[1.5rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-12 py-6 sm:px-16">
+            <div className="min-h-0 flex-1 overflow-y-auto lg:hidden">
+              <div className="overflow-hidden rounded-[1.25rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))]">
+                {selectedPoemIsWide ? (
+                  <div
+                    ref={imageScrollerRef}
+                    className="flex h-[58dvh] w-full items-center justify-center overflow-hidden p-3"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setImageFullscreen(true)}
+                      className="flex h-full w-full items-center justify-center overflow-hidden"
+                      aria-label={`全屏查看${selectedPoem.title}`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={selectedPoem.file}
+                        alt={selectedPoem.title}
+                        className="h-auto max-h-none w-[54dvh] max-w-none rotate-90 rounded-xl object-contain shadow-[0_30px_80px_rgba(0,0,0,0.45)]"
+                      />
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    ref={imageScrollerRef}
+                    className="flex h-[48dvh] w-full items-center justify-center overflow-hidden p-3"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setImageFullscreen(true)}
+                      className="flex h-full w-full items-center justify-center"
+                      aria-label={`全屏查看${selectedPoem.title}`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={selectedPoem.file}
+                        alt={selectedPoem.title}
+                        className="max-h-full max-w-full rounded-xl object-contain shadow-[0_30px_80px_rgba(0,0,0,0.45)]"
+                      />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-3 flex min-h-0 flex-col gap-3 rounded-[1.25rem] border border-white/10 bg-black/10 p-3 text-white/70">
+                <div>
+                  <p className="text-[11px] tracking-[0.35em] text-white/35">题签</p>
+                  <p className="mt-2 text-sm leading-6 text-white/75">{selectedPoem.note}</p>
+                </div>
+                <div className="border-t border-white/10 pt-4">
+                  <p className="text-[11px] tracking-[0.35em] text-white/35">原文</p>
+                  <PoemText
+                    lines={selectedPoem.text}
+                    className="mt-3 max-h-[28dvh] overflow-y-auto pr-2 text-sm leading-7 text-white/80"
+                  />
+                </div>
+                <div className="flex gap-2 overflow-x-auto pt-2">
+                  {poems.map((poem, i) => {
+                    const active = i === selected;
+
+                    return (
+                      <button
+                        key={poem.title}
+                        type="button"
+                        onClick={() => setSelected(i)}
+                        className={`h-20 w-16 shrink-0 overflow-hidden rounded-xl border transition ${
+                          active
+                            ? "border-white/60 ring-1 ring-white/30"
+                            : "border-white/10 opacity-70 hover:opacity-100"
+                        }`}
+                        aria-label={`查看${poem.title}`}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={poem.file}
+                          alt={poem.title}
+                          className="h-full w-full object-cover"
+                        />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            <div className="hidden min-h-0 flex-1 gap-5 overflow-hidden pr-0 lg:grid lg:grid-cols-[minmax(0,1fr)_220px]">
+              <div className="relative flex min-h-[40vh] min-w-0 items-center justify-center overflow-hidden rounded-[1.5rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-16 py-6">
                 <button
                   type="button"
-                  className="absolute left-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/35 text-white transition hover:bg-black/55 sm:left-5"
+                  className="absolute left-5 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/35 text-white transition hover:bg-black/55"
                   onClick={showPrevious}
                   aria-label="查看上一幅"
                 >
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </button>
 
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={selectedPoem.file}
-                  alt={selectedPoem.title}
-                  className="max-h-[72vh] w-auto max-w-full rounded-2xl object-contain shadow-[0_30px_80px_rgba(0,0,0,0.45)]"
-                />
+                <div
+                  ref={imageScrollerRef}
+                  className="h-full overflow-visible"
+                >
+                  <div className="flex h-full min-w-full items-center justify-center">
+                    <button
+                      type="button"
+                      onClick={() => setImageFullscreen(true)}
+                      className="flex max-h-full max-w-full items-center justify-center"
+                      aria-label={`全屏查看${selectedPoem.title}`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={selectedPoem.file}
+                        alt={selectedPoem.title}
+                        className="max-h-[calc(100vh-14rem)] max-w-full rounded-2xl object-contain shadow-[0_30px_80px_rgba(0,0,0,0.45)]"
+                      />
+                    </button>
+                  </div>
+                </div>
 
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/35 text-white transition hover:bg-black/55 sm:right-5"
+                  className="absolute right-5 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/35 text-white transition hover:bg-black/55"
                   onClick={showNext}
                   aria-label="查看下一幅"
                 >
@@ -448,12 +715,19 @@ export default function Poem() {
                 </button>
               </div>
 
-              <div className="flex flex-col gap-4 rounded-[1.5rem] border border-white/10 bg-black/10 p-4 text-white/70">
+              <div className="flex min-h-0 flex-col gap-4 overflow-y-auto rounded-[1.5rem] border border-white/10 bg-black/10 p-4 text-white/70">
                 <div>
                   <p className="text-[11px] tracking-[0.35em] text-white/35">题签</p>
                   <p className="mt-3 text-sm leading-7 text-white/75">{selectedPoem.note}</p>
                 </div>
-                <div className="grid grid-cols-3 gap-2 pt-2 lg:grid-cols-2">
+                <div className="border-t border-white/10 pt-4">
+                  <p className="text-[11px] tracking-[0.35em] text-white/35">原文</p>
+                  <PoemText
+                    lines={selectedPoem.text}
+                    className="mt-3 max-h-[34vh] overflow-y-auto pr-2 text-sm leading-7 text-white/80"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-2 pt-2">
                   {poems.map((poem, i) => {
                     const active = i === selected;
 
@@ -485,6 +759,48 @@ export default function Poem() {
               </div>
             </div>
           </div>
+
+          {imageFullscreen && (
+            <div
+              className="fixed inset-0 z-[60] flex flex-col bg-black p-3 text-white lg:p-6"
+              onClick={(event) => {
+                event.stopPropagation();
+                setImageFullscreen(false);
+              }}
+            >
+              <div className="flex shrink-0 items-center justify-between gap-3 pb-3">
+                <p className="truncate text-sm tracking-[0.22em] text-white/65">{selectedPoem.title}</p>
+                <button
+                type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    setImageFullscreen(false);
+                  }}
+                  className="shrink-0 rounded-full border border-white/20 px-3 py-2 text-xs tracking-[0.18em] text-white/75 transition hover:bg-white/10 hover:text-white"
+                >
+                  关闭
+                </button>
+              </div>
+
+              <button
+                type="button"
+                className="flex min-h-0 flex-1 items-center justify-center overflow-hidden"
+                onClick={(event) => event.stopPropagation()}
+                aria-label={`${selectedPoem.title}全屏图片`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={selectedPoem.file}
+                  alt={selectedPoem.title}
+                  className={`object-contain ${
+                    selectedPoemIsWide
+                      ? "h-auto max-h-none w-[calc(100dvh-5rem)] max-w-none rotate-90 lg:max-h-[calc(100vh-7rem)] lg:w-auto lg:max-w-full lg:rotate-0"
+                      : "max-h-full max-w-full"
+                  }`}
+                />
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
