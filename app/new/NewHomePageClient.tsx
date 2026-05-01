@@ -136,6 +136,8 @@ export default function NewHomePageClient() {
 
   const themeStyle = {
     "--theme-color": activeTheme.color,
+    "--theme-color-border": `color-mix(in srgb, ${activeTheme.color} 34%, #d8ccbc)`,
+    "--theme-color-name": `color-mix(in srgb, ${activeTheme.color} 42%, #19130f)`,
   } as CSSProperties;
 
   return (
@@ -149,7 +151,7 @@ export default function NewHomePageClient() {
           initial="hidden"
           animate="visible"
           transition={{ duration: 0.45 }}
-          className="flex items-center justify-between border-b border-[#d8ccbc] py-5"
+          className="flex items-center justify-between border-b border-[var(--theme-color-border)] py-5"
         >
           <Link href="/" aria-label="返回旧首页">
             <Image
@@ -191,7 +193,7 @@ export default function NewHomePageClient() {
                     onClick={() => setTheme(theme.id)}
                     className={`h-5 w-5 rounded-full border transition md:h-4 md:w-4 ${
                       isActive
-                        ? "border-[#19130f] ring-2 ring-[#19130f]/12"
+                        ? "border-[#19130f] shadow-[0_0_0_4px_rgba(25,19,15,0.08)]"
                         : "border-[#d8ccbc] hover:scale-110"
                     }`}
                     style={{ backgroundColor: theme.color }}
@@ -202,7 +204,7 @@ export default function NewHomePageClient() {
           </div>
         </motion.header>
 
-        <section className="grid gap-8 border-b border-[#d8ccbc] py-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end lg:py-12">
+        <section className="grid gap-8 border-b border-[var(--theme-color-border)] py-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end lg:py-12">
           <motion.div
             variants={fadeUp}
             initial="hidden"
@@ -214,7 +216,7 @@ export default function NewHomePageClient() {
               initial="hidden"
               animate="visible"
               transition={{ ...transition, delay: 0.05 }}
-              className={labelClass}
+              className={`${labelClass} text-[var(--theme-color)]`}
             >
               AI Agent / Security / Algorithm
             </motion.p>
@@ -225,6 +227,7 @@ export default function NewHomePageClient() {
               transition={{ ...transition, delay: 0.12 }}
               className="mt-6 text-[78px] font-normal leading-[0.92] tracking-normal sm:text-[124px] lg:text-[142px]"
               style={{
+                color: "var(--theme-color-name)",
                 fontFamily:
                   "'Songti SC', 'STSong', 'Noto Serif SC', 'Source Han Serif SC', serif",
               }}
@@ -238,7 +241,8 @@ export default function NewHomePageClient() {
               transition={{ ...transition, delay: 0.2 }}
               className="mt-7 max-w-3xl text-[22px] font-medium leading-10 text-[#2e2822]"
             >
-              一个热爱数学和代码的程序员，曾在腾讯从事算法相关工作，目前在理想汽车负责 AI Agent 与安全方向。
+              一个热爱数学和代码的程序员，曾在腾讯从事算法相关工作，目前在理想汽车负责{" "}
+              AI Agent 与安全方向。
             </motion.p>
             <motion.p
               variants={fadeUp}
@@ -256,9 +260,11 @@ export default function NewHomePageClient() {
             initial="hidden"
             animate="visible"
             transition={{ ...transition, delay: 0.32 }}
-            className="border-t border-[#d8ccbc] pt-5 lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0"
+            className="border-t border-[var(--theme-color-border)] pt-5 lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0"
           >
-            <h2 className={labelClass}>Contact</h2>
+            <h2 className={`${labelClass} text-[var(--theme-color)]`}>
+              Contact
+            </h2>
             <div className="mt-5 grid gap-4">
               {contacts.map((item) => {
                 const Icon = item.icon;
@@ -278,7 +284,7 @@ export default function NewHomePageClient() {
                         {item.value}
                       </p>
                     </div>
-                    <BiRightArrowAlt className="text-2xl text-[#968b7d] transition group-hover:translate-x-1 group-hover:text-[var(--theme-color)]" />
+                    <BiRightArrowAlt className="text-2xl text-[var(--theme-color)] opacity-70 transition group-hover:translate-x-1 group-hover:opacity-100" />
                   </a>
                 );
               })}

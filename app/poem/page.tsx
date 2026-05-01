@@ -388,11 +388,17 @@ export default function Poem() {
         {/* Mobile sidebar trigger */}
         <button
           type="button"
-          onClick={() => setSidebarOpen(true)}
-          className="fixed bottom-6 left-4 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-stone-300/80 bg-white/80 shadow-lg backdrop-blur transition hover:bg-white lg:hidden"
-          aria-label="打开导航"
+          onClick={() => setSidebarOpen((open) => !open)}
+          className={`fixed bottom-6 left-4 flex h-12 w-12 items-center justify-center rounded-full border border-stone-300/80 bg-white/85 shadow-lg backdrop-blur transition hover:bg-white lg:hidden ${
+            sidebarOpen ? "z-[60]" : "z-40"
+          }`}
+          aria-label={sidebarOpen ? "关闭导航" : "打开导航"}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-stone-600"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          {sidebarOpen ? (
+            <span className="text-xl leading-none text-stone-600">×</span>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-stone-600"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          )}
         </button>
 
         {/* Mobile sidebar overlay */}
@@ -405,20 +411,12 @@ export default function Poem() {
 
         {/* Mobile sidebar drawer */}
         <aside
-          className={`fixed left-0 top-0 z-50 h-full w-[300px] max-w-[85vw] overflow-y-auto bg-[#f7f1e8] p-6 shadow-2xl transition-transform duration-300 ease-out lg:hidden ${
+          className={`fixed left-0 top-0 z-50 h-full w-[300px] max-w-[85vw] overflow-y-auto bg-[#f7f1e8] p-6 pb-24 shadow-2xl transition-transform duration-300 ease-out lg:hidden ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-4">
             <p className="text-xs tracking-[0.35em] text-stone-400">导航</p>
-            <button
-              type="button"
-              onClick={() => setSidebarOpen(false)}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-stone-200 text-stone-500 transition hover:bg-white"
-              aria-label="关闭导航"
-            >
-              ✕
-            </button>
           </div>
           <div className="flex flex-col gap-2">
             {poems.map((poem, i) => (
