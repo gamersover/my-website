@@ -153,7 +153,7 @@ export default function NewHomePageClient() {
           transition={{ duration: 0.45 }}
           className="flex items-center justify-between border-b border-[var(--theme-color-border)] py-5"
         >
-          <Link href="/" aria-label="返回旧首页">
+          <Link href="/" aria-label="首页">
             <Image
               src="/logo.svg"
               alt=""
