@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { motion } from "framer-motion";
-import { InkCanvas } from "@/components/InkCanvas";
+import { InkFluidCanvas } from "@/components/InkFluidCanvas";
 import {
   BiBookOpen,
   BiCodeAlt,
@@ -144,7 +144,7 @@ export default function NewHomePageClient() {
   return (
     <>
       <div className="fixed inset-0 z-0 bg-[#f3eee5]" aria-hidden />
-      <InkCanvas color={activeTheme.color} />
+      <InkFluidCanvas color={activeTheme.color} />
       <main
         className="relative z-10 min-h-screen text-[#19130f]"
         style={themeStyle}
