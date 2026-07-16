@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { motion } from "framer-motion";
+import { InkFluidCanvas } from "@/components/InkFluidCanvas";
 import {
   BiBookOpen,
   BiCodeAlt,
@@ -141,10 +142,13 @@ export default function NewHomePageClient() {
   } as CSSProperties;
 
   return (
-    <main
-      className="min-h-screen bg-[#f3eee5] text-[#19130f]"
-      style={themeStyle}
-    >
+    <>
+      <div className="fixed inset-0 z-0 bg-[#f3eee5]" aria-hidden />
+      <InkFluidCanvas color={activeTheme.color} />
+      <main
+        className="relative z-10 min-h-screen text-[#19130f]"
+        style={themeStyle}
+      >
       <div className="mx-auto w-full max-w-[1180px] px-5 sm:px-8 lg:px-10">
         <motion.header
           variants={fadeIn}
@@ -395,5 +399,6 @@ export default function NewHomePageClient() {
         </section>
       </div>
     </main>
+    </>
   );
 }
