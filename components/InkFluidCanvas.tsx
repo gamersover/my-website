@@ -36,12 +36,12 @@ export function InkFluidCanvas({ color }: { color: string }) {
     // ---- config ----
     const SIM_RESOLUTION = 128;
     const DYE_RESOLUTION = 1024;
-    const DENSITY_DISSIPATION = 0.97; // ink lingers, then slowly fades
+    const DYE_DISSIPATION = 0.14; // fades in roughly five seconds
     const VELOCITY_DISSIPATION = 0.25;
     const PRESSURE = 0.8;
     const PRESSURE_ITERATIONS = 20;
     const CURL = 22; // swirl strength
-    const SPLAT_RADIUS = 0.004;
+    const SPLAT_RADIUS = 0.002;
     const SPLAT_FORCE = 2000;
 
     // ---- WebGL context ----
@@ -344,39 +344,44 @@ export function InkFluidCanvas({ color }: { color: string }) {
     );
 
     // Combined dye update: advect the ink through the velocity field, fade it,
-    // and inject the new splat — all in a single ping-pong pass. (A separate
-    // splat-then-advect on the dye buffer proved unreliable across drivers.)
+    // and inject the new splat — all in a single ping-pong pass. RGB stores the
+    // density-weighted ink colour and alpha stores density, so existing trails
+    // keep the colour they had when they were created.
     const dyeUpdateShader = fs(
       HEAD +
         `varying vec2 vUv; uniform sampler2D uVelocity; uniform sampler2D uSource;
          uniform vec2 texelSize; uniform float dt; uniform float dissipation;
          uniform vec2 point; uniform float radius; uniform float amount;
-         uniform float aspectRatio;
+         uniform float aspectRatio; uniform vec3 uInk;
          void main () {
            vec2 vel = texture2D(uVelocity, vUv).xy;
            if (!(vel.x == vel.x)) vel.x = 0.0;
            if (!(vel.y == vel.y)) vel.y = 0.0;
            vel = clamp(vel, -300.0, 300.0);
            vec2 coord = vUv - dt * vel * texelSize;
-           float base = texture2D(uSource, coord).r;
+           vec4 base = texture2D(uSource, coord);
            base /= 1.0 + dissipation * dt;
            vec2 p = vUv - point; p.x *= aspectRatio;
            float blob = exp(-dot(p, p) / radius) * amount;
-           gl_FragColor = vec4(vec3(base + blob), 1.0);
+           gl_FragColor = base + vec4(uInk * blob, blob);
          }`
     );
 
-    // Display: render dye intensity as the theme-coloured ink over a light page.
+    // Display the colour carried by each dye sample instead of recolouring the
+    // whole buffer whenever the active theme changes.
     const displayShader = fs(
       HEAD +
-        `varying vec2 vUv; uniform sampler2D uTexture; uniform vec3 uInk;
+        `varying vec2 vUv; uniform sampler2D uTexture;
          uniform float uIntensity;
          void main () {
-           float d = texture2D(uTexture, vUv).r;
+           vec4 dye = texture2D(uTexture, vUv);
+           float d = dye.a;
            // soft non-linear ramp for natural ink density falloff
            float a = clamp(d * uIntensity, 0.0, 1.0);
            a = a * a * (3.0 - 2.0 * a);
-           gl_FragColor = vec4(uInk, a);
+           a *= 0.28;
+           vec3 ink = d > 0.00001 ? dye.rgb / d : vec3(0.0);
+           gl_FragColor = vec4(ink, a);
          }`
     );
 
@@ -468,7 +473,7 @@ export function InkFluidCanvas({ color }: { color: string }) {
       glc.viewport(0, 0, w, h);
       // Half-float textures start as undefined garbage (often NaN). Explicitly
       // zero them, or at-rest advection samples itself and NaN never leaves.
-      glc.clearColor(0, 0, 0, 1);
+      glc.clearColor(0, 0, 0, 0);
       glc.clear(glc.COLOR_BUFFER_BIT);
 
       return {
@@ -611,13 +616,22 @@ export function InkFluidCanvas({ color }: { color: string }) {
     // ---- pointer input ----
     type Pointer = {
       init: boolean;
+      down: boolean;
       moved: boolean;
       x: number;
       y: number;
       dx: number;
       dy: number;
     };
-    const pointer: Pointer = { init: false, moved: false, x: 0, y: 0, dx: 0, dy: 0 };
+    const pointer: Pointer = {
+      init: false,
+      down: false,
+      moved: false,
+      x: 0,
+      y: 0,
+      dx: 0,
+      dy: 0,
+    };
 
     const correctDelta = (delta: number, axis: "x" | "y") => {
       const aspect = canvas.width / canvas.height;
@@ -645,19 +659,23 @@ export function InkFluidCanvas({ color }: { color: string }) {
       pointer.moved = Math.abs(pointer.dx) > 0 || Math.abs(pointer.dy) > 0;
     };
 
-    const onMove = (e: MouseEvent) => updatePointer(e.clientX, e.clientY);
-    const onTouch = (e: TouchEvent) => {
-      const t = e.targetTouches[0];
-      if (t) updatePointer(t.clientX, t.clientY);
+    const onMove = (e: MouseEvent) => {
+      if (pointer.down) updatePointer(e.clientX, e.clientY);
     };
-    const onFirst = (e: MouseEvent) => {
+    const onDown = (e: MouseEvent) => {
+      pointer.down = true;
       pointer.init = true;
       pointer.x = e.clientX / window.innerWidth;
       pointer.y = 1 - e.clientY / window.innerHeight;
     };
+    const onUp = () => {
+      pointer.down = false;
+      pointer.moved = false;
+    };
     window.addEventListener("mousemove", onMove);
-    window.addEventListener("touchmove", onTouch, { passive: true });
-    window.addEventListener("mousedown", onFirst);
+    window.addEventListener("mousedown", onDown);
+    window.addEventListener("mouseup", onUp);
+    window.addEventListener("blur", onUp);
 
     // Pending ink injection for this frame, consumed by the combined dye pass.
     const inkSplat = { x: 0, y: 0, amount: 0 };
@@ -758,28 +776,28 @@ export function InkFluidCanvas({ color }: { color: string }) {
     // Runs right after applyInput (before the velocity solver) — the buffer
     // region where dye ping-pong is reliable across drivers.
     const updateDye = (dt: number) => {
+      const [ir, ig, ib] = inkRef.current;
       glc.disable(glc.BLEND);
       glc.useProgram(dyeUpdateProg.program);
       glc.uniform2f(dyeUpdateProg.uniforms.texelSize, velocity.texelSizeX, velocity.texelSizeY);
       glc.uniform1i(dyeUpdateProg.uniforms.uVelocity, velocity.read.attach(0));
       glc.uniform1i(dyeUpdateProg.uniforms.uSource, dye.read.attach(1));
       glc.uniform1f(dyeUpdateProg.uniforms.dt, dt);
-      glc.uniform1f(dyeUpdateProg.uniforms.dissipation, 1.0 - DENSITY_DISSIPATION);
+      glc.uniform1f(dyeUpdateProg.uniforms.dissipation, DYE_DISSIPATION);
       glc.uniform1f(dyeUpdateProg.uniforms.aspectRatio, canvas.width / canvas.height);
       glc.uniform2f(dyeUpdateProg.uniforms.point, inkSplat.x, inkSplat.y);
       glc.uniform1f(dyeUpdateProg.uniforms.radius, SPLAT_RADIUS);
       glc.uniform1f(dyeUpdateProg.uniforms.amount, inkSplat.amount);
+      glc.uniform3f(dyeUpdateProg.uniforms.uInk, ir, ig, ib);
       blit(dye.write);
       dye.swap();
     };
 
     const render = () => {
-      const [ir, ig, ib] = inkRef.current;
       glc.enable(glc.BLEND);
       glc.blendFunc(glc.SRC_ALPHA, glc.ONE_MINUS_SRC_ALPHA);
       glc.useProgram(displayProg.program);
       glc.uniform1i(displayProg.uniforms.uTexture, dye.read.attach(0));
-      glc.uniform3f(displayProg.uniforms.uInk, ir, ig, ib);
       glc.uniform1f(displayProg.uniforms.uIntensity, 1.7);
       blit(null);
     };
@@ -801,7 +819,11 @@ export function InkFluidCanvas({ color }: { color: string }) {
       updateDye(dt);
       step(dt);
 
-      // clear canvas to transparent, then composite ink
+      // step() leaves its last offscreen velocity framebuffer bound. Bind the
+      // default framebuffer explicitly before clearing the visible canvas, or
+      // the clear would erase the freshly computed velocity field instead.
+      glc.bindFramebuffer(glc.FRAMEBUFFER, null);
+      glc.viewport(0, 0, glc.drawingBufferWidth, glc.drawingBufferHeight);
       glc.clearColor(0, 0, 0, 0);
       glc.clear(glc.COLOR_BUFFER_BIT);
       render();
@@ -826,8 +848,9 @@ export function InkFluidCanvas({ color }: { color: string }) {
       running = false;
       cancelAnimationFrame(raf);
       window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("touchmove", onTouch);
-      window.removeEventListener("mousedown", onFirst);
+      window.removeEventListener("mousedown", onDown);
+      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("blur", onUp);
       document.removeEventListener("visibilitychange", onVisibility);
       const ext = glc.getExtension("WEBGL_lose_context");
       if (ext) ext.loseContext();
