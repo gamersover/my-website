@@ -36,7 +36,7 @@ export function InkFluidCanvas({ color }: { color: string }) {
     // ---- config ----
     const SIM_RESOLUTION = 128;
     const DYE_RESOLUTION = 1024;
-    const DYE_DISSIPATION = 0.14; // fades in roughly five seconds
+    const DYE_DISSIPATION = 0.035; // fades in roughly twenty seconds
     const VELOCITY_DISSIPATION = 0.25;
     const PRESSURE = 0.8;
     const PRESSURE_ITERATIONS = 20;
@@ -379,7 +379,6 @@ export function InkFluidCanvas({ color }: { color: string }) {
            // soft non-linear ramp for natural ink density falloff
            float a = clamp(d * uIntensity, 0.0, 1.0);
            a = a * a * (3.0 - 2.0 * a);
-           a *= 0.28;
            vec3 ink = d > 0.00001 ? dye.rgb / d : vec3(0.0);
            gl_FragColor = vec4(ink, a);
          }`
