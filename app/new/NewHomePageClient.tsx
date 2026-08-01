@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { motion } from "framer-motion";
 import { InkFluidCanvas } from "@/components/InkFluidCanvas";
+import { fallbackPosts, type RecentPost } from "@/app/activity";
 import {
   BiBookOpen,
   BiCodeAlt,
@@ -117,12 +118,26 @@ const transition = {
 
 export default function NewHomePageClient() {
   const [themeId, setThemeId] = useState(defaultThemeId);
+  const [recentPosts, setRecentPosts] = useState<RecentPost[]>(fallbackPosts);
 
   useEffect(() => {
     const storedThemeId = window.localStorage.getItem(themeStorageKey);
     if (storedThemeId && themeOptions.some((theme) => theme.id === storedThemeId)) {
       setThemeId(storedThemeId);
     }
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetch("/api/activity", { signal: controller.signal })
+      .then((response) => (response.ok ? response.json() : Promise.reject()))
+      .then((data: { posts?: RecentPost[] }) => {
+        if (data.posts?.length) setRecentPosts(data.posts);
+      })
+      .catch(() => undefined);
+
+    return () => controller.abort();
   }, []);
 
   const activeTheme = useMemo(
@@ -170,6 +185,12 @@ export default function NewHomePageClient() {
 
           <div className="flex items-center gap-4 md:gap-8">
             <nav aria-label="主要页面" className="hidden items-center gap-8 md:flex">
+              <a
+                href="#now"
+                className="text-sm font-semibold text-[#6d6359] transition hover:text-[var(--theme-color)]"
+              >
+                Now
+              </a>
               {works.map((item) => (
                 <a
                   key={item.title}
@@ -294,6 +315,91 @@ export default function NewHomePageClient() {
               })}
             </div>
           </motion.aside>
+        </section>
+
+        <section
+          id="now"
+          aria-labelledby="now-heading"
+          className="border-b border-[var(--theme-color-border)] py-10 lg:py-12"
+        >
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            transition={transition}
+            className="mb-7"
+          >
+            <div>
+              <div className="flex items-center gap-3">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--theme-color)]" />
+                <p className={labelClass}>Updates</p>
+              </div>
+              <h2
+                id="now-heading"
+                className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl"
+              >
+                最近更新
+              </h2>
+            </div>
+          </motion.div>
+
+          <div>
+            <motion.section
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ ...transition, delay: 0.06 }}
+              aria-labelledby="writing-heading"
+              className="rounded-3xl border border-[#d8ccbc] bg-[rgba(255,250,242,0.66)] p-5 sm:p-7"
+            >
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <BiPen className="text-2xl text-[var(--theme-color)]" />
+                  <h3 id="writing-heading" className="text-xl font-semibold">
+                    文章
+                  </h3>
+                </div>
+                <a
+                  href="https://blog.caoqinping.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group flex items-center gap-1 text-sm font-semibold text-[#766c60] transition hover:text-[var(--theme-color)]"
+                >
+                  全部文章
+                  <BiRightArrowAlt className="text-xl transition group-hover:translate-x-1" />
+                </a>
+              </div>
+
+              <div className="mt-5 divide-y divide-[#ded4c7]">
+                {recentPosts.map((post) => (
+                  <a
+                    key={post.href}
+                    href={post.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group grid gap-3 py-5 first:pt-2 sm:grid-cols-[88px_minmax(0,1fr)_32px] sm:items-start"
+                  >
+                    <time className="pt-1 font-mono text-xs text-[#8b8175]">
+                      {post.date.replaceAll("-", ".")}
+                    </time>
+                    <div>
+                      <h4 className="text-lg font-semibold transition group-hover:text-[var(--theme-color)]">
+                        {post.title}
+                      </h4>
+                      {post.summary ? (
+                        <p className="mt-2 text-sm leading-7 text-[#6d6359]">
+                          {post.summary}
+                        </p>
+                      ) : null}
+                    </div>
+                    <BiRightArrowAlt className="hidden text-2xl text-[#968b7d] transition group-hover:translate-x-1 group-hover:text-[var(--theme-color)] sm:block" />
+                  </a>
+                ))}
+              </div>
+            </motion.section>
+          </div>
         </section>
 
         <section className="grid gap-10 py-10 lg:grid-cols-[minmax(0,1fr)_330px] lg:py-12">

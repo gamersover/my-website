@@ -3,8 +3,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "尘雨尘风",
-  description: "个人网站",
+  title: "陈华杰｜AI Agent、算法与创作",
+  description: "陈华杰的个人主页：AI Agent、安全、算法工程实践，以及最近的文章与创作。",
   appleWebApp: {},
   icons: {
     icon: ["/logo.png"],
@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="zh-CN">
       <body>{children}</body>
     </html>
   );
