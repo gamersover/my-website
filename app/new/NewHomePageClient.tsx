@@ -91,10 +91,16 @@ const experiences = [
     description: "参与算法系统与工程化落地，关注模型效果、数据链路与线上稳定性。",
   },
   {
-    period: "2023 - 至今",
+    period: "2023 - 2026.08",
     company: "理想汽车",
     role: "AI Agent 与安全",
     description: "围绕 AI Agent 的能力边界、系统安全与产品化应用展开工程实践。",
+  },
+  {
+    period: "2026.08 - 至今",
+    company: "蚂蚁集团",
+    role: "现任职",
+    description: "2026 年 8 月从理想汽车加入蚂蚁集团。",
   },
 ];
 
@@ -266,8 +272,8 @@ export default function NewHomePageClient() {
               transition={{ ...transition, delay: 0.2 }}
               className="mt-7 max-w-3xl text-[22px] font-medium leading-10 text-[#2e2822]"
             >
-              一个热爱数学和代码的程序员，曾在腾讯从事算法相关工作，目前在理想汽车负责{" "}
-              AI Agent 与安全方向。
+              一个热爱数学和代码的程序员，曾在腾讯从事算法相关工作，在理想汽车从事{" "}
+              AI Agent 与安全相关工作，2026 年 8 月加入蚂蚁集团。
             </motion.p>
             <motion.p
               variants={fadeUp}
