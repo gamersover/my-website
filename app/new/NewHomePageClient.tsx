@@ -29,6 +29,24 @@ const themeStorageKey = "new-home-theme";
 
 const works = [
   {
+    title: "Isaac",
+    label: "以撒道具手册",
+    description: "查道具、筛选道具池、计算倒转路线，给以撒玩家的随手工具。",
+    href: "https://isaac.caoqinping.com/",
+    icon: BiGame,
+    tone: "bg-[#eef3e9]",
+    external: true,
+  },
+  {
+    title: "Jinling",
+    label: "金陵十二钗",
+    description: "展开一册《红楼梦》，在翻页之间细读金陵十二钗的图画与判词。",
+    href: "https://jinling.caoqinping.com/",
+    icon: BiBookOpen,
+    tone: "bg-[#f6eee8]",
+    external: true,
+  },
+  {
     title: "Blog",
     label: "技术博客",
     description: "技术文章、工程笔记，以及对 AI 与系统实践的长期整理。",
