@@ -61,6 +61,36 @@ function parsePosts(html: string): RecentPost[] {
 }
 
 export async function GET() {
+  // Prefer the Astro feed; retain Hexo support during the domain cutover.
+  try {
+    const response = await fetch(`${blogOrigin}/api/posts.json`, {
+      next: { revalidate },
+      headers: { "user-agent": "caoqinping.com recent-activity" },
+    });
+    if (!response.ok) throw new Error(`Blog feed returned ${response.status}`);
+    const data: unknown = await response.json();
+    const entries = data && typeof data === "object" && "posts" in data ? data.posts : null;
+    if (Array.isArray(entries)) {
+      const posts = entries
+        .filter((post): post is RecentPost =>
+          post !== null && typeof post === "object" &&
+          typeof post.title === "string" && typeof post.date === "string" &&
+          typeof post.href === "string" && post.href.startsWith(`${blogOrigin}/`) &&
+          typeof post.summary === "string"
+        )
+        .slice(0, 3)
+        .map((post) => ({
+          title: post.title,
+          date: post.date,
+          href: post.href,
+          summary: post.summary.length > 92 ? `${post.summary.slice(0, 92).trim()}…` : post.summary,
+        }));
+      if (posts.length) return NextResponse.json({ posts });
+    }
+  } catch {
+    // The old site has no JSON feed; fall back until the new blog is live.
+  }
+
   try {
     const response = await fetch(blogOrigin, {
       next: { revalidate },
