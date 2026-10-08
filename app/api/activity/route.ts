@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import { fallbackPosts, type RecentPost } from "@/app/activity";
 
-export const revalidate = 3600;
+export const revalidate = 300;
 
 const blogOrigin = "https://blog.caoqinping.com";
 
@@ -35,7 +35,7 @@ function plainText(value: string) {
 
 function parsePosts(html: string): RecentPost[] {
   return html
-    .split('<article class="post')
+    .split(/<article\b[^>]*>/i)
     .slice(1)
     .map((article) => {
       const titleMatch = article.match(

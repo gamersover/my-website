@@ -9,21 +9,21 @@ export type RecentPost = {
 // verified fallback means the page is still useful if the blog is unavailable.
 export const fallbackPosts: RecentPost[] = [
   {
-    title: "Agent构建心得及避坑（三）",
-    date: "2025-11-04",
-    href: "https://blog.caoqinping.com/2025/11/04/Agent%E6%9E%84%E5%BB%BA%E5%BF%83%E5%BE%97%E5%8F%8A%E9%81%BF%E5%9D%91-%E4%B8%89/",
-    summary: "继续聊 Agent，这一次把重点放在工具调用：它能做什么，又该如何落进真实系统。",
+    "title": "心之学（四）：AI时代的心之所归",
+    "date": "2026-08-01",
+    "href": "https://blog.caoqinping.com/2026/08/01/%E5%BF%83%E4%B9%8B%E5%AD%A6%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9AAI%E6%97%B6%E4%BB%A3%E7%9A%84%E5%BF%83%E4%B9%8B%E6%89%80%E5%BD%92/",
+    "summary": "一、AI之后：当现实不再占据生命的中心 在人类过去的生活中，现实始终具有一种不可回避的力量。 人必须谋生、劳动，在社会中找到自己的位置。无论心真正向往什么，多数人都需要先回应生存的要求…"
   },
   {
-    title: "Agent构建心得及避坑（二）",
-    date: "2025-09-11",
-    href: "https://blog.caoqinping.com/2025/09/11/Agent%E6%9E%84%E5%BB%BA%E5%BF%83%E5%BE%97%E5%8F%8A%E9%81%BF%E5%9D%91-%E4%BA%8C/",
-    summary: "补完知识库与 RAG 的构建细节，以及 Agent 获取模型外部知识时容易遇到的问题。",
+    "title": "心之学（三）：良知与现实",
+    "date": "2026-08-01",
+    "href": "https://blog.caoqinping.com/2026/08/01/%E5%BF%83%E4%B9%8B%E5%AD%A6%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9A%E8%89%AF%E7%9F%A5%E4%B8%8E%E7%8E%B0%E5%AE%9E/",
+    "summary": "一、心与良知 心之所向与心之所归，当以致良知为本。 愿望与行动的一致，尚不足以成全生命。贪婪也可以有所向，恶意也可以安于所得。若只以是否违心为尺度，那么一个不再有所愧疚的人，反倒仿佛比…"
   },
   {
-    title: "Agent构建心得及避坑",
-    date: "2025-09-08",
-    href: "https://blog.caoqinping.com/2025/09/08/Agent%E6%9E%84%E5%BB%BA%E5%BF%83%E5%BE%97%E5%8F%8A%E9%81%BF%E5%9D%91/",
-    summary: "从模型选择开始，记录构建 Agent 时真正影响效果和工程稳定性的经验。",
-  },
+    "title": "心之学（二）：无为与共鸣",
+    "date": "2026-08-01",
+    "href": "https://blog.caoqinping.com/2026/08/01/%E5%BF%83%E4%B9%8B%E5%AD%A6%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E6%97%A0%E4%B8%BA%E4%B8%8E%E5%85%B1%E9%B8%A3/",
+    "summary": "一、无为与心之所归 这里借“无为”所要表达的，是一种不以功利强求支配全部生命的行动方式。 当人把每一件事都当作换取另一件事的工具，生活便不断被推向将来。学习为了竞争，工作为了晋升，晋升…"
+  }
 ];
